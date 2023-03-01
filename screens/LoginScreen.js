@@ -20,6 +20,8 @@ export default function LoginScreen({navigation}) {
 
   const onLoginPressed = () => {
     console.log(server);
+    console.log(email.value);
+    console.log(password.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     if (emailError || passwordError) {

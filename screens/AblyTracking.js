@@ -4,7 +4,7 @@ import {View, StyleSheet, Button} from 'react-native';
 import io from 'socket.io-client';
 
 MapboxGL.setAccessToken(
-  'pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw',
+  'sk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xlb2ZjbHM1MDF2bjN0bzQ2OTVxam1ydyJ9.kDiSPTj-dqOoict4ehD4Qw',
 );
 const SOCKET_SERVER_URL = 'https://pmisocketserver-production.up.railway.app';
 

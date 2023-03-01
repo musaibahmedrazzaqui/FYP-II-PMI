@@ -16,6 +16,7 @@ import axios from 'axios';
 export default function FareNegotiation({navigation, route}) {
   console.log(route.params.rides);
   const [fare, setFare] = useState({value: '', error: ''});
+  const [count, setCount] = useState(route.params.rides.fareEntered);
   const [location, setLocation] = useState();
   useEffect(() => {
     getCoordinates(route.params.latitude, route.params.longitude);
@@ -64,6 +65,14 @@ export default function FareNegotiation({navigation, route}) {
     // console.log('coord', coord);
     // console.log('places' + textTwo);
   };
+  const incrementCount = () => {
+    // Update state with incremented value
+    setCount(count + 50);
+  };
+  const decrementCount = () => {
+    setCount(count - 50);
+  };
+
   return (
     <Background>
       {/* <Logo /> */}

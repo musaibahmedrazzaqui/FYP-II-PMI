@@ -7,6 +7,7 @@ import axios from 'axios';
 import server from './globals';
 import Background from '../components/Background';
 import BackButton from '../components/BackButton';
+// import server from './globals';
 const getRidedata = response => {
   console.log('hereeee', response);
   let rData = response;
@@ -36,6 +37,21 @@ const ListRideRequestsScreen = ({navigation, route}) => {
         if (response.error == 0) {
           console.log(res.data.data);
           setRides(getRidedata(response.data));
+        } else {
+          console.log('error');
+        }
+      });
+    axios
+      .get(`${server}/rides/checkifleft/${route.params?.userid}`)
+      .then(res => {
+        const response = res.data;
+        if (response.error === 0) {
+          console.log(res.data.data);
+          alert('Driver coming to your location!');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'AblyTracking'}],
+          });
         } else {
           console.log('error');
         }
@@ -94,7 +110,23 @@ const ListRideRequestsScreen = ({navigation, route}) => {
                       //   return;
                       // }
                       // setFrom('true');
-
+                      axios
+                        .post(`${server}/rides/accept`, {
+                          RideID: item.RideID,
+                          PassengerID: item.userid,
+                          DriverID: item.DriverUserID,
+                          fareDecided: item.userFare,
+                        })
+                        .then(() => {
+                          alert('Sucessfully submitted!');
+                          // navigation.reset({
+                          //   index: 0,
+                          //   routes: [{name: 'LoginScreen'}],
+                          // });
+                        })
+                        .catch(function (error) {
+                          console.log(error);
+                        });
                       navigation.navigate({
                         name: 'NavigationScreen',
                         params: {

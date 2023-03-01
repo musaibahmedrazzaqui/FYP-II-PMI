@@ -39,16 +39,16 @@ export default function App() {
         <SafeAreaProvider>
           <Stack.Navigator>
             <Stack.Screen
-              name="AblyTracking"
-              component={AblyTracking}
+              name="StartScreen"
+              component={StartScreen}
               options={{
                 headerShown: false,
               }}
             />
 
             <Stack.Screen
-              name="StartScreen"
-              component={StartScreen}
+              name="AblyTracking"
+              component={AblyTracking}
               options={{
                 headerShown: false,
               }}
