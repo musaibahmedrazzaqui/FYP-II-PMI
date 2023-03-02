@@ -13,7 +13,8 @@ import PhoneInput from 'react-native-phone-number-input';
 import {emailValidator} from '../helpers/emailValidator';
 import {passwordValidator} from '../helpers/passwordValidator';
 import {nameValidator} from '../helpers/nameValidator';
-
+import server from './globals';
+import {sha256} from 'react-native-sha256';
 export default function RegisterScreen({navigation}) {
   const [firstName, setFirstName] = useState({value: '', error: ''});
   const [lastName, setLastName] = useState({value: '', error: ''});
@@ -25,69 +26,87 @@ export default function RegisterScreen({navigation}) {
     error: '',
   });
   const [phonenumber, setPhonenumber] = useState('');
+  const [hashed, setHashed] = useState({value: '', error: ''});
+  // let hashed = '';
   const phoneInput = useRef(null);
-  const onSignUpPressed = () => {
-    // const nameError = nameValidator(name.value)
-    // const emailError = emailValidator(email.value)
-    // const passwordError = passwordValidator(password.value)
-    // if (emailError || passwordError || nameError) {
-    //   setName({ ...name, error: nameError })
-    //   setEmail({ ...email, error: emailError })
-    //   setPassword({ ...password, error: passwordError })
-    //   return
-    // }
+  const onSignUpPressed = async () => {
     if (firstName.value == '') {
       alert('First Name cannot be empty.');
     } else if (
-      /[!@#$%^&*(),.?":{}|<>+-_/|]/g.test(firstName.value) ||
+      /[!@#$%^&*(),.?":{}|<>+-/|]/g.test(firstName.value) ||
       /\d+/g.test(firstName.value)
     ) {
       alert('First Name cannot have any numbers or special characters.');
     } else if (lastName.value == '') {
       alert('Last Name cannot be empty.');
     } else if (
-      /[!@#$%^&*(),.?":{}|<>+-_/|]/g.test(lastName.value) ||
+      /[!@#$%^&*(),.?":{}|<>+-/|]/g.test(lastName.value) ||
       /\d+/g.test(lastName.value)
     ) {
       alert('Last Name cannot have any numbers or special characters.');
     } else if (gender.value == '') {
       alert('Gender cannot be empty.');
-    } else if (
-      /[!@#$%^&*(),.?":{}|<>]/g.test(firstName) ||
-      /\d+/g.test(firstName)
-    ) {
-      alert('First Name cannot have any numbers or special characters.');
+    } else if (/^(male|female)$/g.test(gender.value)) {
+      alert('Gender should be Male or Female.');
     } else if (email.value == '') {
       alert('Email cannot be empty.');
-    } else if (password.value == '') {
+    } else if (hashed.value == '') {
       alert('Password cannot be empty.');
     } else if (formattedphonenumber.value == '') {
       alert('Phone number cannot be empty.');
     } else {
+      //Encode SHA256
+
+      console.log(hashed.value);
       axios
-        .post('https://pmi-backend-production.up.railway.app/users/register', {
+        .post(`${server}/users/register`, {
           firstName: firstName.value,
           lastName: lastName.value,
           instituteID: 1,
           levelID: 1,
           gender: gender.value,
           emailID: email.value,
-          password: password.value,
+          password: hashed.value,
           profileImageUrl: 's',
           dateJoined: '2022-12-22',
           phone: formattedphonenumber.value,
         })
-        .then(() => {
-          alert('Sucessfully submitted!');
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'LoginScreen'}],
-          });
+        .then(res => {
+          if (res.data.error === 0) {
+            alert(
+              'Sucessfully submitted! Please check your email to verify your account and complete your sign up process.',
+            );
+            axios
+              .post(`${server}/mailer/send-email`, {
+                email: email.value,
+              })
+              .then(() => {
+                console.log('email sent');
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'LoginScreen'}],
+                });
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          } else if (res.data.error === 2) {
+            alert(res.data.data);
+          } else {
+            alert('INTERNAL ERROR! Please contact support');
+          }
         })
         .catch(function (error) {
           console.log(error);
         });
     }
+  };
+  const convertSHA = () => {
+    //Encode SHA256
+    sha256(password.value).then(hash => {
+      setHashed({value: hash, error: ''});
+    });
+    onSignUpPressed();
   };
 
   return (
@@ -101,6 +120,7 @@ export default function RegisterScreen({navigation}) {
         value={firstName.value}
         onChangeText={text => setFirstName({value: text, error: ''})}
         error={!!firstName.error}
+        autoCapitalize="words"
         errorText={firstName.error}
       />
       <TextInput
@@ -108,6 +128,7 @@ export default function RegisterScreen({navigation}) {
         returnKeyType="next"
         value={lastName.value}
         onChangeText={text => setLastName({value: text, error: ''})}
+        autoCapitalize="words"
         error={!!lastName.error}
         errorText={lastName.error}
       />
@@ -116,9 +137,11 @@ export default function RegisterScreen({navigation}) {
         returnKeyType="next"
         value={gender.value}
         onChangeText={text => setGender({value: text, error: ''})}
+        autoCapitalize="words"
         error={!!lastName.error}
         errorText={lastName.error}
       />
+      {console.log(gender.value.toUpperCase() != 'MALE')}
       <TextInput
         label="Email"
         returnKeyType="next"
@@ -133,9 +156,15 @@ export default function RegisterScreen({navigation}) {
       />
       <TextInput
         label="Password"
-        returnKeyType="done"
+        returnKeyType="next"
         value={password.value}
-        onChangeText={text => setPassword({value: text, error: ''})}
+        onChangeText={text => (
+          setPassword({value: text, error: ''}),
+          sha256(text).then(hash => {
+            setHashed({value: hash, error: ''});
+          })
+        )}
+        autoCapitalize="none"
         error={!!password.error}
         errorText={password.error}
         secureTextEntry

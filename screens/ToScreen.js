@@ -54,11 +54,21 @@ const FromScreen = ({navigation, route}) => {
     setValue(str);
     // console.log(str);
 
-    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg`;
+    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw`;
+    console.log(endpoint);
+    // try {
+    //   // console.log('before axiosos');
+    //   res = await axios.get(endpoint);
+    //   console.log(endpoint);
+    // } catch (e) {
+    //   console.log(e); // eslint-disable-line
+    // }
+
     const response = await fetch(endpoint);
-    //console.log(endpoint);
+    console.log(response);
     const results = await response.json();
-    // console.log(results);
+    console.log('results', results);
+    console.log(results);
     setSuggestions(results?.features);
     console.log(suggestions);
   };
@@ -154,6 +164,7 @@ const FromScreen = ({navigation, route}) => {
           isTyping={textTwo !== ''}
         />
         {/* {calll()} */}
+        {console.log(suggestions)}
         {suggestions?.length > 0 && (
           <View style={styles.suggestion}>
             {suggestions.map((suggestion, index) => {
@@ -220,6 +231,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  suggestion: {
+    paddingTop: 5,
+    paddingLeft: 70,
+    marginRight: 70,
+    maxWidth: 600,
   },
   suggestiontwo: {
     paddingTop: 5,

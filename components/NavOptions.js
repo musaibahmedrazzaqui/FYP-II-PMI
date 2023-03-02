@@ -18,9 +18,9 @@ const data = [
   },
   {
     id: '3',
-    title: 'See Connections',
+    title: 'Open Live Tracking of Incoming Rides',
     image: require('../assets/booking.png'),
-    screen: 'Connections',
+    screen: 'AblyTracking',
   },
 ];
 

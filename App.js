@@ -5,6 +5,7 @@ import HomeScreen from './screens/HomeScreen';
 import AvailableRidesScreen from './screens/AvailableRidesScreen';
 import AblyTracking from './screens/AblyTracking';
 import ReferScreen from './screens/ReferScreen';
+import YourRidesScreen from './screens/YourRidesScreen';
 import StartScreen from './screens/StartScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -19,6 +20,7 @@ import ListVehiclesScreen from './screens/ListVehiclesScreen';
 import NavigationScreen from './screens/NavigationScreen';
 import ListRideRequestsScreen from './screens/ListRideRequestsScreen';
 import FareNegotiation from './screens/FareNegotiation';
+import DriverBefDest from './screens/DriverBefDest';
 // Redux Store
 import {store} from './store';
 
@@ -27,6 +29,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FoodScreen from './screens/FoodScreen';
+import MailVerify from './screens/MailVerify';
 import SettingsScreen from './screens/SettingsScreen';
 import {isPending} from '@reduxjs/toolkit';
 
@@ -38,9 +41,30 @@ export default function App() {
       <NavigationContainer>
         <SafeAreaProvider>
           <Stack.Navigator>
+            {/* <Stack.Screen
+              name="MailVerify"
+              component={MailVerify}
+              options={{
+                headerShown: false,
+              }}
+            /> */}
             <Stack.Screen
               name="StartScreen"
               component={StartScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="DriverBefDest"
+              component={DriverBefDest}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="YourRidesScreen"
+              component={YourRidesScreen}
               options={{
                 headerShown: false,
               }}

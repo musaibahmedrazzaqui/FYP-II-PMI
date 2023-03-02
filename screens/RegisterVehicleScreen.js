@@ -50,7 +50,9 @@ export default function RegisterVehicleScreen({navigation, route}) {
         DriverID: driverid,
       })
       .then(() => {
-        alert('Sucessfully registered!');
+        alert(
+          'Sucessfully registered! Close the app and login again to begin offering rides!',
+        );
         navigation.navigate({
           name: 'HomeScreen',
           params: {

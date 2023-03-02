@@ -28,23 +28,6 @@ const AvailableRidesScreen = ({navigation, route}) => {
   const [did, setdId] = useState();
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
-  const updateState = useCallback(async () => {
-    axios
-      .get(`${server}/rides/checkifleft/${route.params?.userid}`)
-      .then(res => {
-        const response = res.data;
-        if (response.error === 0) {
-          console.log(res.data.data);
-          alert('Driver coming to your location!');
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'AblyTracking'}],
-          });
-        } else {
-          console.log('not found');
-        }
-      });
-  }, []);
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
       setlatitude(info.coords.latitude);
@@ -61,8 +44,7 @@ const AvailableRidesScreen = ({navigation, route}) => {
         console.log('error');
       }
     });
-    setInterval(updateState, 3000);
-  }, [updateState]);
+  }, []);
   const getLocation = async data => {
     console.log(data.id);
     // const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.location}.json?types=place%2Cpostcode%2Caddress&limit=1&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg`;

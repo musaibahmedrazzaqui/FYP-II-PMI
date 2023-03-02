@@ -1,23 +1,52 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import {View, StyleSheet, Button} from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import {View, StyleSheet, Text, Image} from 'react-native';
 import io from 'socket.io-client';
+import axios from 'axios';
+import server from './globals';
+// import { Card } from 'react-native-paper';
+import {Avatar, Button, Card, Title} from 'react-native-paper';
 
 MapboxGL.setAccessToken(
-  'sk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xlb2ZjbHM1MDF2bjN0bzQ2OTVxam1ydyJ9.kDiSPTj-dqOoict4ehD4Qw',
+  'pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw',
 );
 const SOCKET_SERVER_URL = 'https://pmisocketserver-production.up.railway.app';
 
-const AblyTracking = () => {
+const AblyTracking = ({navigation, route}) => {
   const [counter, setCounter] = useState(0);
+  const [latitude, setLat] = useState(0.0);
+  const [longitude, setLong] = useState(0.0);
+  const [check, setCheck] = useState();
   const [driverLocation, setDriverLocation] = useState([
     67.04311014205486, 24.791446911566705,
   ]);
+  const [dataforably, setData] = useState([]);
   const updateDriverLocation = useCallback(location => {
     setDriverLocation(location);
-    console.log(location);
+    // console.log(location);
   }, []);
   useEffect(() => {
+    // console.log(route.params.rides);
+    Geolocation.getCurrentPosition(info => {
+      setLat(info.coords.latitude);
+      setLong(info.coords.longitude);
+    });
+    let url = `${server}/rides/forably/${route.params?.userid}`;
+    axios.get(url).then(res => {
+      console.log(url);
+      const response = res.data;
+      if (response.error == 0) {
+        // console.log('respose', response);
+        console.log(res.data.data[0]);
+        setData(res.data.data[0]);
+        setCheck(5);
+      } else {
+        // setCheck(false);
+        alert('No active rides yet');
+        console.log('error');
+      }
+    });
     // Connect to the server via Socket.IO
     const socket = io(SOCKET_SERVER_URL);
     console.log(SOCKET_SERVER_URL);
@@ -29,33 +58,87 @@ const AblyTracking = () => {
       socket.disconnect();
     };
   }, [updateDriverLocation]);
-
-  const handleReload = () => {
-    console.log('INSIDE HANDLE RELOAD');
-    setCounter(counter + 1);
+  const source = {
+    uri: '../assets/booking.png',
+    height: 50,
+    width: 50,
   };
-
+  const style = {
+    iconImage: '../assets/booking.png',
+    iconOffset: [0, -25],
+  };
   return (
     // <View style={styles.container}>
-    <MapboxGL.MapView style={styles.map}>
-      {console.log(driverLocation)}
-      <MapboxGL.Camera
-        zoomLevel={15}
-        animationMode={'flyTo'}
-        animationDuration={3000}
-        centerCoordinate={driverLocation}
-      />
-      {driverLocation && (
-        <MapboxGL.PointAnnotation
-          id="driverLocation"
-          anchor={{x: 0.5, y: 0.5}}
-          coordinate={driverLocation}></MapboxGL.PointAnnotation>
+    <>
+      {check && (
+        <MapboxGL.MapView style={styles.map}>
+          {/* {console.log(dataforably.DestLat)} */}
+          <MapboxGL.Camera
+            zoomLevel={13}
+            animationMode={'flyTo'}
+            animationDuration={3000}
+            centerCoordinate={driverLocation}
+          />
+          <MapboxGL.PointAnnotation
+            id="currentlocation"
+            title="current location"
+            anchor={{x: 0.5, y: 0.5}}
+            coordinate={[longitude, latitude]}>
+            <MapboxGL.Callout title="Your Marker Title">
+              <View>
+                <Text>Your current location</Text>
+              </View>
+            </MapboxGL.Callout>
+          </MapboxGL.PointAnnotation>
+          <MapboxGL.PointAnnotation
+            id="finallocation"
+            title="Destination"
+            anchor={{x: 0.5, y: 0.5}}
+            coordinate={[dataforably.DestLong, dataforably.DestLat]}>
+            <MapboxGL.Callout title="Your Marker Title">
+              <View>
+                <Text>Destination</Text>
+              </View>
+            </MapboxGL.Callout>
+          </MapboxGL.PointAnnotation>
+
+          {driverLocation && (
+            <MapboxGL.PointAnnotation
+              id="driverLocation"
+              title="Driver's location"
+              anchor={{x: 0.5, y: 0.5}}
+              coordinate={driverLocation}>
+              <MapboxGL.Callout title="Your Marker Title">
+                <View>
+                  <Text>Driver's Location</Text>
+                </View>
+              </MapboxGL.Callout>
+            </MapboxGL.PointAnnotation>
+          )}
+        </MapboxGL.MapView>
       )}
-    </MapboxGL.MapView>
-    //   <View style={styles.buttonContainer}>
-    //     <Button title="Reload" onPress={() => console.log('Button pressed')} />
-    //   </View>
-    // </View>
+      <View>
+        <Card>
+          <Text
+            style={{
+              fontSize: 25,
+              marginLeft: 18,
+              marginTop: 20,
+              color: 'black',
+            }}>
+            Driver: {dataforably.firstName} {dataforably.lastName}
+          </Text>
+          {/* {getLocation(rides[item.id - 1])} */}
+          <Card.Content>
+            <Title>Destination: {dataforably.DestLocation}</Title>
+
+            <Title>Phone Number: {dataforably.phone}</Title>
+            <Text>Fare Decided {dataforably.fareDecided} Rupees</Text>
+          </Card.Content>
+          {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
+        </Card>
+      </View>
+    </>
   );
 };
 
@@ -67,6 +150,11 @@ const styles = StyleSheet.create({
     bottom: 16,
     left: 16,
     right: 16,
+  },
+  page: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     flex: 1,

@@ -12,12 +12,13 @@ import {theme} from '../core/theme';
 import {emailValidator} from '../helpers/emailValidator';
 import {passwordValidator} from '../helpers/passwordValidator';
 import server from './globals';
-
+import {sha256} from 'react-native-sha256';
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
   const [userid, setUid] = useState('');
 
+  const [hashed, setHashed] = useState({value: '', error: ''});
   const onLoginPressed = () => {
     console.log(server);
     console.log(email.value);
@@ -29,18 +30,20 @@ export default function LoginScreen({navigation}) {
       setPassword({...password, error: passwordError});
       return;
     }
+
+    console.log(hashed.value);
     axios
       .post(`${server}/users/login`, {
         emailID: email.value,
-        password: password.value,
+        password: hashed.value,
       })
       .then(res => {
-        var uid = res.data.data[0].userID;
         console.log(email.value);
         // setUid(obj[0].userID);
         if (res.data.error === 0) {
           alert('Sucessfully logged in!');
           // console.log(userid);
+          var uid = res.data.data[0].userID;
           navigation.navigate({
             name: 'HomeScreen',
             params: {
@@ -49,6 +52,14 @@ export default function LoginScreen({navigation}) {
           });
         } else if (res.data.error == 1) {
           alert('Email and passwords do not match');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'LoginScreen'}],
+          });
+        } else if (res.data.error == 3) {
+          alert(
+            'Please verify your email by clicking the verification link in your registered email!',
+          );
           navigation.reset({
             index: 0,
             routes: [{name: 'LoginScreen'}],
@@ -64,7 +75,7 @@ export default function LoginScreen({navigation}) {
       })
       .catch(function (error) {
         console.log(error);
-        alert(error);
+        // alert(error);
       });
   };
 
@@ -89,7 +100,13 @@ export default function LoginScreen({navigation}) {
         label="Password"
         returnKeyType="done"
         value={password.value}
-        onChangeText={text => setPassword({value: text, error: ''})}
+        onChangeText={text => (
+          setPassword({value: text, error: ''}),
+          sha256(text).then(hash => {
+            setHashed({value: hash, error: ''});
+          })
+        )}
+        autoCapitalize="none"
         error={!!password.error}
         errorText={password.error}
         secureTextEntry

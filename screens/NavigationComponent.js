@@ -74,10 +74,11 @@ const Navigation = props => {
             // eslint-disable-next-line no-alert
             alert(message);
           }}
-          onArrive={() => {
+          onArrive={event => {
             // eslint-disable-next-line no-alert
 
             alert('You have reached your destination');
+            Navigat.navigate('DriverBefDest');
             // addornot();
           }}
           onCancelNavigation={event => {

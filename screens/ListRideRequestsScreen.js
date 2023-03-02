@@ -41,21 +41,6 @@ const ListRideRequestsScreen = ({navigation, route}) => {
           console.log('error');
         }
       });
-    axios
-      .get(`${server}/rides/checkifleft/${route.params?.userid}`)
-      .then(res => {
-        const response = res.data;
-        if (response.error === 0) {
-          console.log(res.data.data);
-          alert('Driver coming to your location!');
-          navigation.reset({
-            index: 0,
-            routes: [{name: 'AblyTracking'}],
-          });
-        } else {
-          console.log('error');
-        }
-      });
   }, []);
 
   return (
@@ -80,7 +65,7 @@ const ListRideRequestsScreen = ({navigation, route}) => {
                 </Text>
                 {/* {getLocation(rides[item.id - 1])} */}
                 <Card.Content>
-                  <Title>Pickup from: {item.location.slice(0, 28)}</Title>
+                  <Title>Pickup from: {item.location}</Title>
                   <Text
                     style={{
                       fontSize: 18,

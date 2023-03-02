@@ -67,10 +67,10 @@ export default function FareNegotiation({navigation, route}) {
   };
   const incrementCount = () => {
     // Update state with incremented value
-    setCount(count + 50);
+    setCount(count + 10);
   };
   const decrementCount = () => {
-    setCount(count - 50);
+    setCount(count - 10);
   };
 
   return (
@@ -94,12 +94,12 @@ export default function FareNegotiation({navigation, route}) {
         <Card.Content>
           <Title>Going to {route.params.rides.to_location.slice(0, 28)}</Title>
           <Text>Fare Requested {route.params.rides.fareEntered} Rupees</Text>
-          <TextInput
+          {/* <TextInput
             label="Enter your fare & wait for driver to accept request"
             returnKeyType="done"
             value={fare.value}
             onChangeText={text => setFare({value: text, error: ''})}
-          />
+          /> */}
           <Text style={styles.description}>Choose your fare:</Text>
           <FareButton onPress={incrementCount}>+</FareButton>
           <Text>{count}</Text>
@@ -109,10 +109,11 @@ export default function FareNegotiation({navigation, route}) {
         <Card.Actions>
           <Button
             onPress={() => {
+              console.log('OYE CHAL KION NHI RAHA');
               axios
                 .post(`${server}/rides/addnegotiation`, {
                   driverFare: route.params.rides.fareEntered,
-                  userFare: fare.value,
+                  userFare: count,
                   finalFare: 0,
                   rideID: route.params.rides.RideID,
                   userLatitude: route.params.latitude,
@@ -121,11 +122,14 @@ export default function FareNegotiation({navigation, route}) {
                   userID: route.params.userid,
                 })
                 .then(() => {
-                  alert(
-                    'Request Sent! Driver will come to your current location',
-                  );
+                  alert('Request Sent to the driver!');
                   navigation.navigate({
-                    name: 'AvailableRidesScreen',
+                    name: 'YourRidesScreen',
+                    params: {
+                      rides: route.params.rides,
+                      userFare: count,
+                      userID: route.params.userid,
+                    },
                   });
                 })
                 .catch(function (error) {
