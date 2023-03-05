@@ -92,7 +92,7 @@ export default function FareNegotiation({navigation, route}) {
         </Text>
         {/* {getLocation(rides[item.id - 1])} */}
         <Card.Content>
-          <Title>Going to {route.params.rides.to_location.slice(0, 28)}</Title>
+          <Title>Going to {route.params.rides.to_location}</Title>
           <Text>Fare Requested {route.params.rides.fareEntered} Rupees</Text>
           {/* <TextInput
             label="Enter your fare & wait for driver to accept request"

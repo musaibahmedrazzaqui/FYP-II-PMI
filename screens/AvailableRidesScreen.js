@@ -75,8 +75,8 @@ const AvailableRidesScreen = ({navigation, route}) => {
                 </Text>
                 {/* {getLocation(rides[item.id - 1])} */}
                 <Card.Content>
-                  <Title>Pickup from {item.location.slice(0, 30)}</Title>
-                  <Title>Going To {item.to_location.slice(0, 30)}</Title>
+                  <Title>Driver Currently in: {item.location}</Title>
+                  <Title>Going To {item.to_location}</Title>
                   <Text>Fare willing to pay {item.fareEntered} Rupees</Text>
                   <Text>
                     Car Taking:{' '}
@@ -89,15 +89,30 @@ const AvailableRidesScreen = ({navigation, route}) => {
                 <Card.Actions>
                   <Button
                     onPress={() => {
-                      navigation.navigate({
-                        name: 'FareNegotiation',
-                        params: {
-                          rides: item,
-                          latitude: latitude,
-                          longitude: longitude,
-                          userid: uid,
-                        },
-                      });
+                      axios
+                        .get(
+                          `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
+                        )
+                        .then(res => {
+                          // console.log('DID ');
+                          const response = res.data;
+                          if (response.error == 0) {
+                            navigation.navigate({
+                              name: 'FareNegotiation',
+                              params: {
+                                rides: item,
+                                latitude: latitude,
+                                longitude: longitude,
+                                userid: uid,
+                              },
+                            });
+                            console.log(res.data.length);
+                            setRides(getRidedata(response.data));
+                          } else {
+                            console.log('error');
+                            alert(response.data);
+                          }
+                        });
                     }}>
                     Negotiate Fare
                   </Button>
