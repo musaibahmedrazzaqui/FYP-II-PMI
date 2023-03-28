@@ -20,6 +20,7 @@ import Background from '../components/Background';
 import BackButton from '../components/BackButton';
 import Header from '../components/Header';
 import FloatingButton from '../components/FloatingButton';
+import FloatingButton2 from '../components/FloatingButton2';
 // import server from './globals';
 const getRidedata = response => {
   console.log('hereeee', response);
@@ -448,6 +449,7 @@ const DriversAcceptedRides = ({navigation, route}) => {
           </Modal>
         </View>
       </ScrollView>
+
       <FloatingButton
         onPress={() =>
           navigation.navigate({
@@ -467,6 +469,18 @@ const DriversAcceptedRides = ({navigation, route}) => {
         }
         title="Picked up everyone?"
         title2="Navigate to destination!"
+      />
+      <FloatingButton2
+        onPress={() =>
+          navigation.navigate({
+            name: 'DriverEndScreen',
+            params: {
+              rides: rides,
+            },
+          })
+        }
+        title="Want to End ride?"
+        title2="Click here!"
       />
     </Background>
   );

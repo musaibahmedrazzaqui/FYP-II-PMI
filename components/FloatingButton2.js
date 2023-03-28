@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, Text} from 'react-native';
 
-const FloatingButton = ({onPress, title, title2}) => (
+const FloatingButton2 = ({onPress, title, title2}) => (
   <TouchableOpacity onPress={onPress} style={styles.button}>
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.title}>{title2}</Text>
@@ -10,7 +10,7 @@ const FloatingButton = ({onPress, title, title2}) => (
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#0425c9',
+    backgroundColor: 'red',
     borderRadius: 20,
     width: 180,
     height: 60,
@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     bottom: 10,
-    right: 175,
+    left: 175,
+
     elevation: 5,
   },
   title: {
@@ -28,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FloatingButton;
+export default FloatingButton2;

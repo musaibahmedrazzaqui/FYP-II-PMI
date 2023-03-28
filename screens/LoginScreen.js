@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable prettier/prettier */
+import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import axios from 'axios';
@@ -13,13 +14,23 @@ import {emailValidator} from '../helpers/emailValidator';
 import {passwordValidator} from '../helpers/passwordValidator';
 import server from './globals';
 import {sha256} from 'react-native-sha256';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
   const [userid, setUid] = useState('');
 
   const [hashed, setHashed] = useState({value: '', error: ''});
-  const onLoginPressed = () => {
+
+  useEffect(() => {
+    async function fetch() {
+      const showdata = await AsyncStorage.getItem('userdata');
+      console.log('seemytits', showdata);
+    }
+  }, []);
+
+  async function onLoginPressed() {
     console.log(server);
     console.log(email.value);
     console.log(password.value);
@@ -37,13 +48,19 @@ export default function LoginScreen({navigation}) {
         emailID: email.value,
         password: hashed.value,
       })
-      .then(res => {
+      .then(async res => {
         console.log(email.value);
         // setUid(obj[0].userID);
         if (res.data.error === 0) {
           alert('Sucessfully logged in!');
           // console.log(userid);
+          console.log('mujhe dekho', res.data.token);
           var uid = res.data.data[0].userID;
+          const userdata = await AsyncStorage.setItem(
+            'userdata',
+            res.data.data[0].userID.toString(),
+          );
+
           navigation.navigate({
             name: 'HomeScreen',
             params: {
@@ -77,7 +94,7 @@ export default function LoginScreen({navigation}) {
         console.log(error);
         // alert(error);
       });
-  };
+  }
 
   return (
     <Background>

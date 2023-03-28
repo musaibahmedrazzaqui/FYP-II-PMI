@@ -12,6 +12,7 @@
   "dependencies": {
     "@draftbit/ui": "^46.4.3",
     "@homee/react-native-mapbox-navigation": "^1.1.0",
+    "@react-native-async-storage/async-storage": "^1.18.0",
     "@react-native-community/geolocation": "^3.0.3",
     "@react-native-mapbox-gl/maps": "^8.6.0-beta.0",
     "@react-native-picker/picker": "^2.4.8",
