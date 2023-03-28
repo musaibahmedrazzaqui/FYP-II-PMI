@@ -3,7 +3,6 @@ import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Paragraph from '../components/Paragraph';
-import RideDetails from '../components/RideDetails';
 import axios from 'axios';
 import server from './globals';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,13 +31,11 @@ export default function ReceiptScreen({navigation, route}) {
     <Background>
       <View style={styles.container}>
         <Text style={[styles.question, {fontWeight: 'bold', fontSize: 21}]}>
-          You have finished your Ride!
+          Passenger: {route.params.ride.PassengerFName}{' '}
+          {route.params.ride.PassengerLName}
+          {'\n'}
+          Fare to be Recieved: {route.params.ride.fareDecided}
         </Text>
-        <Text style={[styles.question, {fontWeight: 'bold', fontSize: 21}]}>
-          Passengers that came along:
-        </Text>
-        {console.log('ridesJson', route.params.rides)}
-        <RideDetails rides={route.params.rides} />
         <Text style={styles.question}>How was your Experience?</Text>
         <View style={styles.ratingContainer}>
           <TouchableOpacity
@@ -54,7 +51,7 @@ export default function ReceiptScreen({navigation, route}) {
           </TouchableOpacity>
           <TouchableOpacity
             style={
-              rating === false ? styles.activeButtonSad : styles.inactiveButton
+              rating === false ? styles.activeButton : styles.inactiveButton
             }
             onPress={() => handleRating(false)}>
             <Image
@@ -76,19 +73,21 @@ export default function ReceiptScreen({navigation, route}) {
           onPress={() => {
             console.log(rating);
             console.log(comment);
-            console.log(route.params.rides[0].RideID);
             axios
               .get(
-                `${server}/rides/updatestatusride/${route.params.rides[0].RideID}`,
+                `${server}/rides/updatestatusdest/${route.params.ride.PassengerID}/${route.params.ride.RideID}`,
               )
               .then(res => {
                 console.log(res.data);
                 navigation.navigate({
-                  name: 'HomeScreen',
+                  name: 'DriversAcceptedRides',
+                  params: {
+                    userid: route.params.ride.DriverID,
+                  },
                 });
               });
           }}>
-          End Ride!
+          Submit
         </Button>
       </View>
     </Background>
@@ -112,12 +111,6 @@ const styles = StyleSheet.create({
   },
   activeButton: {
     backgroundColor: '#ADD8E6',
-    padding: 30,
-    borderRadius: 5,
-    margin: 10,
-  },
-  activeButtonSad: {
-    backgroundColor: '#Fa8072',
     padding: 30,
     borderRadius: 5,
     margin: 10,

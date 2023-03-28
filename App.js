@@ -13,8 +13,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import Connections from './screens/Connections';
 import EditProfileScreen from './screens/EditProfileScreen';
-import FromScreen from './screens/FromScreen';
-import ToScreen from './screens/ToScreen';
+
 import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
 import RegisterDriverScreen from './screens/RegisterDriverScreen';
 import ListVehiclesScreen from './screens/ListVehiclesScreen';
@@ -22,6 +21,7 @@ import NavigationScreen from './screens/NavigationScreen';
 import ListRideRequestsScreen from './screens/ListRideRequestsScreen';
 import FareNegotiation from './screens/FareNegotiation';
 import DriversAcceptedRides from './screens/DriversAcceptedRides';
+import OfferRideScreen from './screens/OfferRideScreen';
 
 import ReceiptScreen from './screens/ReceiptScreen';
 // Redux Store
@@ -31,7 +31,7 @@ import {store} from './store';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import FoodScreen from './screens/FoodScreen';
+
 import MailVerify from './screens/MailVerify';
 import SettingsScreen from './screens/SettingsScreen';
 import {isPending} from '@reduxjs/toolkit';
@@ -58,6 +58,13 @@ export default function App() {
               <Stack.Screen
                 name="StartScreen"
                 component={StartScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="OfferRideScreen"
+                component={OfferRideScreen}
                 options={{
                   headerShown: false,
                 }}
@@ -95,14 +102,6 @@ export default function App() {
               <Stack.Screen
                 name="AblyTracking"
                 component={AblyTracking}
-                options={{
-                  headerShown: false,
-                }}
-              />
-
-              <Stack.Screen
-                name="FoodScreen"
-                component={FoodScreen}
                 options={{
                   headerShown: false,
                 }}
@@ -151,13 +150,7 @@ export default function App() {
                   headerShown: false,
                 }}
               />
-              <Stack.Screen
-                name="FromScreen"
-                component={FromScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
+
               <Stack.Screen
                 name="FareNegotiation"
                 component={FareNegotiation}
@@ -165,13 +158,7 @@ export default function App() {
                   headerShown: false,
                 }}
               />
-              <Stack.Screen
-                name="ToScreen"
-                component={ToScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
+
               <Stack.Screen
                 name="RegisterVehicleScreen"
                 component={RegisterVehicleScreen}
@@ -246,6 +233,13 @@ export default function App() {
                 }}
               />
               <Stack.Screen
+                name="OfferRideScreen"
+                component={OfferRideScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
                 name="YourRidesScreen"
                 component={YourRidesScreen}
                 options={{
@@ -276,14 +270,6 @@ export default function App() {
               <Stack.Screen
                 name="AblyTracking"
                 component={AblyTracking}
-                options={{
-                  headerShown: false,
-                }}
-              />
-
-              <Stack.Screen
-                name="FoodScreen"
-                component={FoodScreen}
                 options={{
                   headerShown: false,
                 }}
@@ -324,9 +310,10 @@ export default function App() {
                   headerShown: false,
                 }}
               />
+
               <Stack.Screen
-                name="FromScreen"
-                component={FromScreen}
+                name="StartScreen"
+                component={StartScreen}
                 options={{
                   headerShown: false,
                 }}
@@ -338,13 +325,7 @@ export default function App() {
                   headerShown: false,
                 }}
               />
-              <Stack.Screen
-                name="ToScreen"
-                component={ToScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
+
               <Stack.Screen
                 name="RegisterVehicleScreen"
                 component={RegisterVehicleScreen}

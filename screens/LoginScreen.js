@@ -50,6 +50,7 @@ export default function LoginScreen({navigation}) {
       })
       .then(async res => {
         console.log(email.value);
+        console.log('sdaaaaaaaaaaaaaa', res);
         // setUid(obj[0].userID);
         if (res.data.error === 0) {
           alert('Sucessfully logged in!');

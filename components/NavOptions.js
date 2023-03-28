@@ -14,7 +14,7 @@ const data = [
     id: '2',
     title: 'Offer a Ride',
     image: require('../assets/car.png'),
-    screen: 'FoodScreen',
+    screen: 'OfferRideScreen',
   },
   {
     id: '3',

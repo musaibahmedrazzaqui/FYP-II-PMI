@@ -131,7 +131,7 @@ export default function FoodScreen({navigation, route}) {
       .catch(function (error) {
         console.log(error);
       });
-    alert('Thankyou for registering as a Driver!');
+    alert('Ride has been posted!');
     axios.get(`${server}/rides/${did}`).then(res => {
       console.log('DID', did);
       const response = res.data.error;

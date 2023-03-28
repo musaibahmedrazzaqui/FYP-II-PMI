@@ -162,6 +162,11 @@ const FromScreen = ({navigation, route}) => {
                   onPress={() => {
                     setValue(suggestion.place_name);
                     setSuggestions([]);
+                    setPlaces(suggestion.place_name);
+                    const sLower = suggestion.place_name.toLowerCase();
+                    console.log('slower', sLower);
+                    let srcCoord = null;
+                    getCoordinates(sLower);
                   }}>
                   <Text style={styles.suggestiontwo}>
                     {suggestion.place_name}
