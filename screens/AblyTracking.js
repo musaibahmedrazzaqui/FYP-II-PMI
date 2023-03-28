@@ -1,7 +1,14 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import Geolocation from '@react-native-community/geolocation';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
 import io from 'socket.io-client';
 import axios from 'axios';
 import server from './globals';
@@ -58,14 +65,8 @@ const AblyTracking = ({navigation, route}) => {
       socket.disconnect();
     };
   }, [updateDriverLocation]);
-  const source = {
-    uri: '../assets/booking.png',
-    height: 50,
-    width: 50,
-  };
-  const style = {
-    iconImage: '../assets/booking.png',
-    iconOffset: [0, -25],
+  const handlePress = () => {
+    Linking.openURL(`tel:${dataforably.phone}`);
   };
   return (
     // <View style={styles.container}>
@@ -132,7 +133,13 @@ const AblyTracking = ({navigation, route}) => {
           <Card.Content>
             <Title>Destination: {dataforably.DestLocation}</Title>
 
-            <Title>Phone Number: {dataforably.phone}</Title>
+            <TouchableOpacity onPress={handlePress}>
+              <Image
+                source={require('../assets/dial1.jpg')}
+                style={styles.image}
+              />
+            </TouchableOpacity>
+
             <Text>Fare Decided {dataforably.fareDecided} Rupees</Text>
           </Card.Content>
           {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
@@ -161,5 +168,12 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  image: {
+    width: 70,
+    height: 70,
+    marginBottom: 1,
+    marginTop: -75,
+    marginLeft: 290,
   },
 });

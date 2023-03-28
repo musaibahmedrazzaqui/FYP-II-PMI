@@ -6,6 +6,7 @@ import {Image, TouchableOpacity} from 'react-native';
 import MapboxNavigation from '@homee/react-native-mapbox-navigation';
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
+import server from './globals';
 import axios from 'axios';
 const Navigation = props => {
   const [location, setLocation] = useState(null);
@@ -27,7 +28,8 @@ const Navigation = props => {
       error => console.log('Error getting location:', error),
       {enableHighAccuracy: true, distanceFilter: 10},
     );
-
+    console.log('propsssssss', props.puid);
+    console.log('riddddddddd', props.rid);
     return () => {
       Geolocation.clearWatch(watchId);
     };
@@ -53,7 +55,7 @@ const Navigation = props => {
         <MapboxNavigation
           showsEndOfRouteFeedback={true}
           shouldSimulateRoute={true}
-          origin={origin}
+          origin={[67.10309513960672, 24.937160037517916]}
           destination={destination}
           showsEndOfRouteFeedback={false}
           hideStatusView
@@ -74,16 +76,27 @@ const Navigation = props => {
             // eslint-disable-next-line no-alert
             alert(message);
           }}
-          onArrive={event => {
-            // eslint-disable-next-line no-alert
-
-            alert('You have reached your destination');
-            Navigat.navigate('DriverBefDest');
-            // addornot();
+          onArrive={async event => {
+            try {
+              alert('You have reached your destination');
+              console.log('Reached Destination', event.nativeEvent);
+              if (props.puid !== 0) {
+                const res = await axios.get(
+                  `${server}/rides/updatestatus/${props.puid}/${props.rid}`,
+                );
+                console.log(res.data);
+                Navigat.navigate('DriversAcceptedRides');
+              } else {
+                console.log('HIIIIIIIIIIIIIIIII');
+              }
+            } catch (error) {
+              console.error(error);
+              // Handle the error gracefully, for example, show a toast message or an alert box
+            }
           }}
           onCancelNavigation={event => {
             alert('Cancelled navigation event');
-            Navigat.navigate('ListRideRequestsScreen');
+            Navigat.navigate('DriversAcceptedRides');
           }}
         />
       </View>

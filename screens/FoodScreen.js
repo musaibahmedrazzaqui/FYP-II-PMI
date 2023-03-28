@@ -132,7 +132,7 @@ export default function FoodScreen({navigation, route}) {
         console.log(error);
       });
     alert('Thankyou for registering as a Driver!');
-    axios.get(`${server}2/rides/${did}`).then(res => {
+    axios.get(`${server}/rides/${did}`).then(res => {
       console.log('DID', did);
       const response = res.data.error;
       if (response == 0) {

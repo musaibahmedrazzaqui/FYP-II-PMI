@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import {useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import Background from '../components/Background';
@@ -57,72 +57,78 @@ const AvailableRidesScreen = ({navigation, route}) => {
     <Background>
       <BackButton goBack={navigation.goBack} />
       {console.log(rides)}
-      <FlatList
-        data={rides}
-        keyExtractor={item => item.key.toString()}
-        renderItem={({item}) => (
-          <View style={{padding: 10}}>
-            <TouchableOpacity>
-              <Card>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    marginLeft: 18,
-                    marginTop: 20,
-                    color: 'black',
-                  }}>
-                  {item.name}
-                </Text>
-                {/* {getLocation(rides[item.id - 1])} */}
-                <Card.Content>
-                  <Title>Driver Currently in: {item.location}</Title>
-                  <Title>Going To {item.to_location}</Title>
-                  <Text>Fare willing to pay {item.fareEntered} Rupees</Text>
-                  <Text>
-                    Car Taking:{' '}
-                    {item.Manufacturer + ' ' + item.Model + ' ' + item.Year}
-                  </Text>
-                  <Text></Text>
-                  <Text>Number of Passengers: {item.numberOfPeople}</Text>
-                </Card.Content>
-                {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
-                <Card.Actions>
-                  <Button
-                    onPress={() => {
-                      axios
-                        .get(
-                          `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
-                        )
-                        .then(res => {
-                          // console.log('DID ');
-                          const response = res.data;
-                          if (response.error == 0) {
-                            navigation.navigate({
-                              name: 'FareNegotiation',
-                              params: {
-                                rides: item,
-                                latitude: latitude,
-                                longitude: longitude,
-                                userid: uid,
-                              },
-                            });
-                            console.log(res.data.length);
-                            setRides(getRidedata(response.data));
-                          } else {
-                            console.log('error');
-                            alert(response.data);
-                          }
-                        });
+      {rides[0] ? (
+        <FlatList
+          data={rides}
+          keyExtractor={item => item.key.toString()}
+          renderItem={({item}) => (
+            <View style={{padding: 10}}>
+              <TouchableOpacity>
+                <Card>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      marginLeft: 18,
+                      marginTop: 20,
+                      color: 'black',
                     }}>
-                    Negotiate Fare
-                  </Button>
-                  <Button style={{fontSize: '12'}}>Request ride</Button>
-                </Card.Actions>
-              </Card>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+                    {item.name}
+                  </Text>
+                  {/* {getLocation(rides[item.id - 1])} */}
+                  <Card.Content>
+                    <Title>Driver Currently in: {item.location}</Title>
+                    <Title>Going To {item.to_location}</Title>
+                    <Text>Fare willing to pay {item.fareEntered} Rupees</Text>
+                    <Text>
+                      Car Taking:{' '}
+                      {item.Manufacturer + ' ' + item.Model + ' ' + item.Year}
+                    </Text>
+                    <Text></Text>
+                    <Text>Number of Passengers: {item.numberOfPeople}</Text>
+                  </Card.Content>
+                  {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
+                  <Card.Actions>
+                    <Button
+                      onPress={() => {
+                        axios
+                          .get(
+                            `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
+                          )
+                          .then(res => {
+                            // console.log('DID ');
+                            const response = res.data;
+                            if (response.error == 0) {
+                              navigation.navigate({
+                                name: 'FareNegotiation',
+                                params: {
+                                  rides: item,
+                                  latitude: latitude,
+                                  longitude: longitude,
+                                  userid: uid,
+                                },
+                              });
+                              console.log(res.data.length);
+                              setRides(getRidedata(response.data));
+                            } else {
+                              console.log('error');
+                              alert(response.data);
+                            }
+                          });
+                      }}>
+                      Negotiate Fare
+                    </Button>
+                    <Button style={{fontSize: '12'}}>Request ride</Button>
+                  </Card.Actions>
+                </Card>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      ) : (
+        <View>
+          <Text style={styles.header}>NO RIDES available YET</Text>
+        </View>
+      )}
     </Background>
   );
 };
@@ -138,3 +144,10 @@ const AvailableRidesScreen = ({navigation, route}) => {
 //  }
 
 export default AvailableRidesScreen;
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    paddingVertical: 12,
+  },
+});

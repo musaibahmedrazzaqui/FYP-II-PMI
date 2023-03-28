@@ -10,6 +10,12 @@ const data = [
     image: require('../assets/requests.png'),
     screen: 'ListRideRequestsScreen',
   },
+  {
+    id: '2',
+    title: 'Accepted Requests Here',
+    image: require('../assets/requests.png'),
+    screen: 'DriversAcceptedRides',
+  },
 ];
 
 const navOptions = ({uid}) => {
@@ -34,7 +40,7 @@ const navOptions = ({uid}) => {
                 },
               })
             }
-            style={tw`p-3 m-3 w-85 rounded-sm shadow-sm `}>
+            style={tw`p-3 m-3 w-50 rounded-sm shadow-sm `}>
             <View>
               <Image
                 style={{

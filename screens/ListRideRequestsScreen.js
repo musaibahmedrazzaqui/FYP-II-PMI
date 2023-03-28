@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useEffect} from 'react';
-import {View, Text, TouchableOpacity, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
@@ -47,95 +47,93 @@ const ListRideRequestsScreen = ({navigation, route}) => {
     <Background>
       <BackButton goBack={navigation.goBack} />
       {console.log(rides)}
-      <FlatList
-        data={rides}
-        keyExtractor={item => item.key.toString()}
-        renderItem={({item}) => (
-          <View style={{padding: 10}}>
-            <TouchableOpacity>
-              <Card>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    marginLeft: 18,
-                    marginTop: 20,
-                    color: 'black',
-                  }}>
-                  Passenger Name: {item.firstName} {item.lastName}
-                </Text>
-                {/* {getLocation(rides[item.id - 1])} */}
-                <Card.Content>
-                  <Title>Pickup from: {item.location}</Title>
+      {rides[0] ? (
+        <FlatList
+          data={rides}
+          keyExtractor={item => item.key.toString()}
+          renderItem={({item}) => (
+            <View style={{padding: 10}}>
+              <TouchableOpacity>
+                <Card>
                   <Text
                     style={{
-                      fontSize: 18,
-                      marginLeft: 0,
-                      marginTop: 10,
+                      fontSize: 25,
+                      marginLeft: 18,
+                      marginTop: 20,
                       color: 'black',
                     }}>
-                    Fare willing to pay: {item.userFare} Rupees
+                    Passenger Name: {item.firstName} {item.lastName}
                   </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      marginLeft: 0,
-                      marginTop: 10,
-                      color: 'black',
-                    }}>
-                    You requested: {item.driverFare} Rupees
-                  </Text>
-                </Card.Content>
-                {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
-                <Card.Actions>
-                  <Button
-                    onPress={() => {
-                      // if (emailError || passwordError) {
-                      //   setEmail({ ...email, error: emailError });
-                      //   setPassword({ ...password, error: passwordError });
-                      //   return;
-                      // }
-                      // setFrom('true');
-                      axios
-                        .post(`${server}/rides/accept`, {
-                          RideID: item.RideID,
-                          PassengerID: item.userid,
-                          DriverID: item.DriverUserID,
-                          fareDecided: item.userFare,
-                        })
-                        .then(() => {
-                          alert('Sucessfully submitted!');
-                          // navigation.reset({
-                          //   index: 0,
-                          //   routes: [{name: 'LoginScreen'}],
-                          // });
-                        })
-                        .catch(function (error) {
-                          console.log(error);
+                  {/* {getLocation(rides[item.id - 1])} */}
+                  <Card.Content>
+                    <Title>Pickup from: {item.location}</Title>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        marginLeft: 0,
+                        marginTop: 10,
+                        color: 'black',
+                      }}>
+                      Fare willing to pay: {item.userFare} Rupees
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        marginLeft: 0,
+                        marginTop: 10,
+                        color: 'black',
+                      }}>
+                      You requested: {item.driverFare} Rupees
+                    </Text>
+                  </Card.Content>
+                  {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
+                  <Card.Actions>
+                    <Button
+                      onPress={() => {
+                        axios
+                          .post(`${server}/rides/accept`, {
+                            RideID: item.RideID,
+                            PassengerID: item.userid,
+                            DriverID: item.DriverUserID,
+                            fareDecided: item.userFare,
+                          })
+                          .then(() => {
+                            // alert("Navigating to Passenger's Location");
+                          })
+                          .catch(function (error) {
+                            console.log(error);
+                          });
+                        navigation.navigate({
+                          name: 'DriversAcceptedRides',
+                          params: {
+                            userid: item.DriverUserID,
+                            rideid: item.RideID,
+                            driverfromlatitude: item.dLatitude,
+                            driverfromlongitude: item.drLongitude,
+                            driverfromlocation: item.DriverfLocation,
+                            drivertolatitude: item.to_latitude,
+                            drivertolongitude: item.to_longitude,
+                            drivertolocation: item.to_location,
+                            passengerlatitude: item.latitude,
+                            passengerlongitude: item.longitude,
+                            passengerlocation: item.location,
+                          },
                         });
-                      navigation.navigate({
-                        name: 'NavigationScreen',
-                        params: {
-                          driverfromlatitude: item.dLatitude,
-                          driverfromlongitude: item.drLongitude,
-                          driverfromlocation: item.DriverfLocation,
-                          drivertolatitude: item.to_latitude,
-                          drivertolongitude: item.to_longitude,
-                          drivertolocation: item.to_location,
-                          passengerlatitude: item.latitude,
-                          passengerlongitude: item.longitude,
-                          passengerlocation: item.location,
-                        },
-                      });
-                    }}>
-                    Accept
-                  </Button>
-                  <Button style={{color: 'red'}}>Reject</Button>
-                </Card.Actions>
-              </Card>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+                      }}>
+                      Accept
+                    </Button>
+                    <Button style={{color: 'red'}}>Reject</Button>
+                  </Card.Actions>
+                </Card>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      ) : (
+        <View>
+          <Text style={styles.header}>NO RIDE REQUEST YET</Text>
+        </View>
+      )}
     </Background>
   );
 };
@@ -151,3 +149,10 @@ const ListRideRequestsScreen = ({navigation, route}) => {
 //  }
 
 export default ListRideRequestsScreen;
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    paddingVertical: 12,
+  },
+});

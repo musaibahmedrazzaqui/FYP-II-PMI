@@ -3,6 +3,7 @@ import {Provider} from 'react-redux';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import AvailableRidesScreen from './screens/AvailableRidesScreen';
+import DriversAcceptedRides from './screens/DriversAcceptedRides';
 import AblyTracking from './screens/AblyTracking';
 import ReferScreen from './screens/ReferScreen';
 import YourRidesScreen from './screens/YourRidesScreen';
@@ -13,6 +14,7 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import Connections from './screens/Connections';
 import EditProfileScreen from './screens/EditProfileScreen';
 import FromScreen from './screens/FromScreen';
+import ReceiptScreen from './screens/ReceiptScreen';
 import ToScreen from './screens/ToScreen';
 import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
 import RegisterDriverScreen from './screens/RegisterDriverScreen';
@@ -32,6 +34,7 @@ import FoodScreen from './screens/FoodScreen';
 import MailVerify from './screens/MailVerify';
 import SettingsScreen from './screens/SettingsScreen';
 import {isPending} from '@reduxjs/toolkit';
+// import ReceiptScreen from './screens/ReceiptScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -41,13 +44,6 @@ export default function App() {
       <NavigationContainer>
         <SafeAreaProvider>
           <Stack.Navigator>
-            {/* <Stack.Screen
-              name="MailVerify"
-              component={MailVerify}
-              options={{
-                headerShown: false,
-              }}
-            /> */}
             <Stack.Screen
               name="StartScreen"
               component={StartScreen}
@@ -55,13 +51,23 @@ export default function App() {
                 headerShown: false,
               }}
             />
+
             <Stack.Screen
-              name="DriverBefDest"
-              component={DriverBefDest}
+              name="ReceiptScreen"
+              component={ReceiptScreen}
               options={{
                 headerShown: false,
               }}
             />
+
+            <Stack.Screen
+              name="DriversAcceptedRides"
+              component={DriversAcceptedRides}
+              options={{
+                headerShown: false,
+              }}
+            />
+
             <Stack.Screen
               name="YourRidesScreen"
               component={YourRidesScreen}
