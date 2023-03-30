@@ -88,7 +88,7 @@ export default function OfferRideScreen({navigation, route}) {
         vehicleID: vehicle.value,
       })
       .then(res => {
-        alert('Sucessfully registered!');
+        alert('Sucessfully posted!');
         console.log(
           'did',
           did,
@@ -101,6 +101,7 @@ export default function OfferRideScreen({navigation, route}) {
         );
         console.log('RIDEIDDDDDDDDD', res.data.data);
         const rid = res.data.data;
+
         axios
           .post(`${server}/rides/driverlocation`, {
             RideID: rid,
@@ -131,31 +132,35 @@ export default function OfferRideScreen({navigation, route}) {
             alert(error);
           });
         navigation.navigate({
-          name: 'HomeScreen',
+          name: 'FromScreen',
           params: {
             userid: uid,
+            loc1: textTwo,
+            loc2: textThree,
+            fromcoord: [fromlongitude, fromlatitude],
+            tocoord: [tolongitude, tolatitude],
           },
         });
       })
       .catch(function (error) {
         console.log(error);
       });
-    alert('Ride has been posted!');
-    axios.get(`${server}/rides/${did}`).then(res => {
-      console.log('DID', did);
-      const response = res.data.error;
-      if (response == 0) {
-        setFrom('true');
-        navigation.navigate({
-          name: 'HomeScreen',
-          params: {post: from},
-        });
-      } else {
-        navigation.navigate({
-          name: 'HomeScreen',
-        });
-      }
-    });
+    // alert('Ride has been posted!');
+    // axios.get(`${server}/rides/${did}`).then(res => {
+    //   console.log('DID', did);
+    //   const response = res.data.error;
+    //   if (response == 0) {
+    //     setFrom('true');
+    //     navigation.navigate({
+    //       name: 'HomeScreen',
+    //       params: {post: from},
+    //     });
+    //   } else {
+    //     navigation.navigate({
+    //       name: 'HomeScreen',
+    //     });
+    //   }
+    // });
   };
   const handleChange = async event => {
     const {eventCount, target, text} = event.nativeEvent;

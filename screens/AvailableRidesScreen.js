@@ -1,6 +1,13 @@
 import React, {useState, useCallback} from 'react';
 import {useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import Background from '../components/Background';
@@ -8,6 +15,7 @@ import BackButton from '../components/BackButton';
 import RNRestart from 'react-native-restart';
 import server from './globals';
 import axios from 'axios';
+import PickupDestination from '../components/PickupDestination2';
 // import FareNegotiation from './FareNegotiation';
 const getRidedata = response => {
   console.log('hereeee', response);
@@ -28,23 +36,42 @@ const AvailableRidesScreen = ({navigation, route}) => {
   const [did, setdId] = useState();
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
+  const fetchData = async () => {
+    axios
+      .get(`${server}/rides/getrides/${route.params?.userid}`)
+      .then(res => {
+        console.log('DID ');
+        const response = res.data;
+        if (response.error == 0) {
+          console.log(res.data.length);
+          setRides(getRidedata(response.data));
+        } else {
+          console.log('error');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     Geolocation.getCurrentPosition(info => {
       setlatitude(info.coords.latitude);
       setlongitude(info.coords.longitude);
     });
     console.log('ssssssssss');
-    axios.get(`${server}/rides/getrides/${route.params?.userid}`).then(res => {
-      console.log('DID ');
-      const response = res.data;
-      if (response.error == 0) {
-        console.log(res.data.length);
-        setRides(getRidedata(response.data));
-      } else {
-        console.log('error');
-      }
-    });
+
+    fetchData();
   }, []);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    console.log('on refersh');
+    setRefreshing(true);
+    // fetch new data or do any necessary processing
+    // setData([...]); // set the new data array
+    fetchData();
+    setRefreshing(false);
+  };
   const getLocation = async data => {
     console.log(data.id);
     // const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.location}.json?types=place%2Cpostcode%2Caddress&limit=1&access_token=pk.eyJ1IjoibXVzYWliYWhtZWRyYXp6YXF1aSIsImEiOiJjbGFud3ZlemEwMGRiM25sc2dlbW1vMmRxIn0.426C1RaWyDpDv9XJ8Odigg`;
@@ -63,8 +90,34 @@ const AvailableRidesScreen = ({navigation, route}) => {
           keyExtractor={item => item.key.toString()}
           renderItem={({item}) => (
             <View style={{padding: 10}}>
-              <TouchableOpacity>
-                <Card>
+              <TouchableOpacity
+                onPress={() => {
+                  axios
+                    .get(
+                      `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
+                    )
+                    .then(res => {
+                      // console.log('DID ');
+                      const response = res.data;
+                      if (response.error == 0) {
+                        navigation.navigate({
+                          name: 'FareNegotiation',
+                          params: {
+                            rides: item,
+                            latitude: latitude,
+                            longitude: longitude,
+                            userid: uid,
+                          },
+                        });
+                        console.log(res.data.length);
+                        setRides(getRidedata(response.data));
+                      } else {
+                        console.log('error');
+                        alert(response.data);
+                      }
+                    });
+                }}>
+                <Card style={{width: 280}}>
                   <Text
                     style={{
                       fontSize: 25,
@@ -72,22 +125,27 @@ const AvailableRidesScreen = ({navigation, route}) => {
                       marginTop: 20,
                       color: 'black',
                     }}>
-                    {item.name}
+                    Driver: {item.firstName} {item.lastName}
                   </Text>
                   {/* {getLocation(rides[item.id - 1])} */}
                   <Card.Content>
-                    <Title>Driver Currently in: {item.location}</Title>
-                    <Title>Going To {item.to_location}</Title>
-                    <Text>Fare willing to pay {item.fareEntered} Rupees</Text>
+                    {/* <Title>Driver Currently in: {item.location}</Title>
+                    <Title>Going To {item.to_location}</Title> */}
+                    <PickupDestination
+                      loc1={item.location}
+                      loc2={item.to_location}
+                    />
+                    <Text>Fare Asked: {item.fareEntered} Rupees</Text>
                     <Text>
-                      Car Taking:{' '}
+                      Car:{' '}
                       {item.Manufacturer + ' ' + item.Model + ' ' + item.Year}
                     </Text>
-                    <Text></Text>
-                    <Text>Number of Passengers: {item.numberOfPeople}</Text>
+                    <Text>
+                      Number of Seats Available: {item.numberOfPeople}
+                    </Text>
                   </Card.Content>
                   {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
-                  <Card.Actions>
+                  {/* <Card.Actions>
                     <Button
                       onPress={() => {
                         axios
@@ -118,14 +176,20 @@ const AvailableRidesScreen = ({navigation, route}) => {
                       Negotiate Fare
                     </Button>
                     <Button style={{fontSize: '12'}}>Request ride</Button>
-                  </Card.Actions>
+                  </Card.Actions> */}
                 </Card>
               </TouchableOpacity>
             </View>
           )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       ) : (
-        <View>
+        <View
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <Text style={styles.header}>NO RIDES available YET</Text>
         </View>
       )}

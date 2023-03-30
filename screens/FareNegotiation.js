@@ -15,6 +15,7 @@ import axios from 'axios';
 
 export default function FareNegotiation({navigation, route}) {
   console.log(route.params.rides);
+  const rides = route.params.rides;
   const [fare, setFare] = useState({value: '', error: ''});
   const [count, setCount] = useState(route.params.rides.fareEntered);
   const [location, setLocation] = useState();
@@ -88,12 +89,12 @@ export default function FareNegotiation({navigation, route}) {
             marginTop: 20,
             color: 'black',
           }}>
-          Driver: {route.params.rides.firstName} {route.params.rides.lastName}
+          Driver: {rides.firstName} {rides.lastName}
         </Text>
         {/* {getLocation(rides[item.id - 1])} */}
         <Card.Content>
-          <Title>Going to {route.params.rides.to_location}</Title>
-          <Text>Fare Requested {route.params.rides.fareEntered} Rupees</Text>
+          <Title>Going to {rides.to_location.split(',')[0]}</Title>
+          <Text>Fare Requested {rides.fareEntered} Rupees</Text>
           {/* <TextInput
             label="Enter your fare & wait for driver to accept request"
             returnKeyType="done"
