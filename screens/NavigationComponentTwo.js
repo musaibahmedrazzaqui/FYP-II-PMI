@@ -87,7 +87,7 @@ const Navigation = props => {
                   `${server}/rides/updatestatus/${props.puid}/${props.rid}`,
                 );
                 console.log(res.data);
-                Navigat.navigate('DriversAcceptedRides');
+                Navigat.navigate('DriverHome');
               } else {
                 console.log('HIIIIIIIIIIIIIIIII');
               }
@@ -98,7 +98,7 @@ const Navigation = props => {
           }}
           onCancelNavigation={event => {
             alert('Cancelled navigation event');
-            Navigat.navigate('DriversAcceptedRides');
+            Navigat.navigate('DriverHome');
           }}
         />
       </View>

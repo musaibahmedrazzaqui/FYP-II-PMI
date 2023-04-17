@@ -3,7 +3,9 @@ import {Provider} from 'react-redux';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import DriverEndScreen from './screens/DriverEndScreen';
+import ListPassengerRides from './screens/ListPassengerRides';
 import AvailableRidesScreen from './screens/AvailableRidesScreen';
+import PassengerCreateRide from './screens/PassengerCreateRide';
 import AblyTracking from './screens/AblyTracking';
 import ReferScreen from './screens/ReferScreen';
 import YourRidesScreen from './screens/YourRidesScreen';
@@ -15,6 +17,7 @@ import Connections from './screens/Connections';
 import EditProfileScreen from './screens/EditProfileScreen';
 import FromScreen from './screens/FromScreen';
 import ToScreen from './screens/ToScreen';
+import GetPassengerRides from './screens/GetPassengerRides';
 import RegisterVehicleScreen from './screens/RegisterVehicleScreen';
 import RegisterDriverScreen from './screens/RegisterDriverScreen';
 import ListVehiclesScreen from './screens/ListVehiclesScreen';
@@ -23,8 +26,10 @@ import ListRideRequestsScreen from './screens/ListRideRequestsScreen';
 import FareNegotiation from './screens/FareNegotiation';
 import DriversAcceptedRides from './screens/DriversAcceptedRides';
 import OfferRideScreen from './screens/OfferRideScreen';
-
+import NewHome from './screens/NewHome';
 import ReceiptScreen from './screens/ReceiptScreen';
+import DriverHome from './screens/DriverHome';
+import PassengerHome from './screens/PassengerHome';
 // Redux Store
 import {store} from './store';
 
@@ -59,6 +64,48 @@ export default function App() {
               <Stack.Screen
                 name="StartScreen"
                 component={StartScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="NewHome"
+                component={NewHome}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="PassengerHome"
+                component={PassengerHome}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="DriverHome"
+                component={DriverHome}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="PassengerCreateRide"
+                component={PassengerCreateRide}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="GetPassengerRides"
+                component={GetPassengerRides}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="ListPassengerRides"
+                component={ListPassengerRides}
                 options={{
                   headerShown: false,
                 }}
@@ -246,6 +293,48 @@ export default function App() {
           )}
           {showdata != null && (
             <Stack.Navigator>
+              <Stack.Screen
+                name="NewHome"
+                component={NewHome}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="PassengerHome"
+                component={PassengerHome}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="DriverHome"
+                component={DriverHome}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="PassengerCreateRide"
+                component={PassengerCreateRide}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="GetPassengerRides"
+                component={GetPassengerRides}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="ListPassengerRides"
+                component={ListPassengerRides}
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Stack.Screen
                 name="HomeScreen"
                 component={HomeScreen}

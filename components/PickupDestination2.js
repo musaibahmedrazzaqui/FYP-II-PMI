@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   image: {
     width: 45,
     height: 80,
-    marginBottom: 30,
+    marginBottom: 20,
     marginRight: -12,
   },
   pickupText: {

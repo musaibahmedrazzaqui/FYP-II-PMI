@@ -31,7 +31,7 @@ const navOptions = ({uid}) => {
       <FlatList
         data={data}
         keyExtractor={item => item.id}
-        horizontal
+        vertical
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() =>

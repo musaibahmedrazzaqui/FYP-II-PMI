@@ -21,6 +21,7 @@ import BackButton from '../components/BackButton';
 import Header from '../components/Header';
 import FloatingButton from '../components/FloatingButton';
 import FloatingButton2 from '../components/FloatingButton2';
+import DirectionsDisplay from '../components/DirectionsDisplay';
 // import server from './globals';
 const getRidedata = response => {
   console.log('hereeee', response);
@@ -73,13 +74,14 @@ const DriversAcceptedRides = ({navigation, route}) => {
   }, []);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selected, setSelected] = useState([]);
   const [placename, setPlacename] = useState([]);
   const fetchData = async (lat, long) => {
     setIsLoading(true);
     try {
       console.log(lat, long);
       const response = await axios.get(`${server}/landmarks/${lat}/${long}`);
-      console.log(response.data.placename);
+      console.log('PLACENAME', response.data);
       setPlacename(response.data);
     } catch (error) {
       console.log(error);
@@ -91,6 +93,7 @@ const DriversAcceptedRides = ({navigation, route}) => {
   const showModal = (lat, long) => {
     setModalVisible(true);
     fetchData(lat, long);
+    setSelected([parseFloat(long), parseFloat(lat)]);
   };
 
   return (
@@ -433,10 +436,20 @@ const DriversAcceptedRides = ({navigation, route}) => {
                 <ActivityIndicator size="large" color="#0000ff" />
               ) : (
                 <>
+                  <View style={{maxHeight: '75%'}}>
+                    <DirectionsDisplay
+                      start={[
+                        parseFloat(placename.longitude),
+                        parseFloat(placename.latitude),
+                      ]}
+                      end={selected}
+                    />
+                  </View>
                   <Text style={styles.modalText}>
                     Nearest Landmark: {placename.placename}
                     {'\n'}
-                    {'\n'} Distance (in km): {placename.distance}
+                    {'\n'} Distance (in km):{' '}
+                    {parseFloat(placename.distance).toFixed(2)} km
                   </Text>
                   <TouchableOpacity
                     onPress={() => setModalVisible(false)}

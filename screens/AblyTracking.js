@@ -43,6 +43,7 @@ const AblyTracking = ({navigation, route}) => {
     axios.get(url).then(res => {
       console.log(url);
       const response = res.data;
+      console.log(response);
       if (response.error == 0) {
         // console.log('respose', response);
         console.log(res.data.data[0]);

@@ -10,7 +10,7 @@ import {useNavigation} from '@react-navigation/native';
 MapboxGL.setAccessToken(
   'pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw',
 );
-const DirectionsMap = ({loc1, loc2, start, end, uid, pass}) => {
+const DirectionsDisplay = ({start, end}) => {
   const [routeGeoJSON, setRouteGeoJSON] = useState(null);
   const mapRef = useRef(null);
   useEffect(() => {
@@ -22,6 +22,7 @@ const DirectionsMap = ({loc1, loc2, start, end, uid, pass}) => {
       try {
         const response = await fetch(requestUrl);
         const data = await response.json();
+        console.log('DATAAAAa', data);
         const route = data.routes[0].geometry;
         setRouteGeoJSON(lineString(route.coordinates));
       } catch (error) {
@@ -51,7 +52,7 @@ const DirectionsMap = ({loc1, loc2, start, end, uid, pass}) => {
       mapRef.current != null &&
         mapRef.current.setCamera({
           centerCoordinate: centerCoordinate,
-          zoomLevel: 10,
+          zoomLevel: 8,
           animationDuration: 2000,
         });
     }
@@ -87,47 +88,12 @@ const DirectionsMap = ({loc1, loc2, start, end, uid, pass}) => {
             </MapboxGL.ShapeSource>
           )}
         </MapboxGL.MapView>
-        <PickupDestination
-          loc1={loc1}
-          loc2={loc2}
-          pickup={'ShahreFaisal'}
-          destination={'KArsaz'}
-        />
-        {pass ? (
-          <View>
-            <LocationButton
-              mode="contained"
-              onPress={() => {
-                Navigat.navigate({
-                  name: 'ListPassengerRides',
-                  params: {
-                    userid: uid,
-                  },
-                });
-              }}>
-              Start?!
-            </LocationButton>
-          </View>
-        ) : (
-          <LocationButton
-            mode="contained"
-            onPress={() => {
-              Navigat.navigate({
-                name: 'ListRideRequestsScreen',
-                params: {
-                  userid: uid,
-                },
-              });
-            }}>
-            Let's Begin!
-          </LocationButton>
-        )}
       </View>
     </View>
   );
 };
 
-export default DirectionsMap;
+export default DirectionsDisplay;
 const styles = StyleSheet.create({
   input: {
     height: 40,

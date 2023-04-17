@@ -63,7 +63,7 @@ export default function LoginScreen({navigation}) {
           );
 
           navigation.navigate({
-            name: 'HomeScreen',
+            name: 'NewHome',
             params: {
               userid: uid,
             },

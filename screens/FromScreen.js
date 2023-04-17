@@ -59,6 +59,7 @@ const FromScreen = ({navigation, route}) => {
         start={fromcoord}
         end={tocoord}
         uid={route.params?.userid}
+        pass={route.params?.pass}
       />
     </View>
   );

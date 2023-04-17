@@ -1,55 +1,53 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import tw from 'twrnc';
-import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import server from '../screens/globals';
-
+import axios from 'axios';
 const data = [
   {
     id: '1',
-    title: 'Offer a Ride',
-    image: require('../assets/requests.png'),
-    screen: 'OfferRideScreen',
+    title: 'Take a Ride',
+    image: require('../assets/get_a_ride.png'),
+    screen: 'AvailableRidesScreen',
   },
   {
     id: '2',
-    title: 'View Ride Details',
-    image: require('../assets/requests.png'),
-    screen: 'ListRideRequestsScreen',
+    title: 'Create a Ride',
+    image: require('../assets/car.png'),
+    screen: 'PassengerCreateRide',
   },
   {
     id: '3',
-    title: 'View Requests',
-    image: require('../assets/requests.png'),
-    screen: 'DriversAcceptedRides',
-  },
-  {
-    id: '4',
-    title: 'Passenger Created Rides',
-    image: require('../assets/requests.png'),
-    screen: 'GetPassengerRides',
+    title: 'Open Live Tracking of Incoming Rides',
+    image: require('../assets/booking.png'),
+    screen: 'AblyTracking',
   },
 ];
 
-const navOptions = ({uid}) => {
+const NavPassenger = ({uid}) => {
+  const Navigation = useNavigation();
   const [name, setName] = useState('');
   useEffect(() => {
+    console.log('uidddddddddddddddd', uid);
     let url = `${server}/rides/getName/${uid}`;
     console.log(url);
-    axios.get(url).then(res => {
-      console.log(res.data.data[0].firstName);
-      setName(res.data.data[0].firstName);
-    });
+    axios
+      .get(url)
+      .then(res => {
+        console.log('sdasdsad', res.data.data[0].firstName);
+        setName(res.data.data[0].firstName);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, []);
-
-  const Navigation = useNavigation();
 
   return (
     <View>
       <Text style={tw`m-2 font-bold text-8 text-center`}>Hi {name}!</Text>
       <Text style={tw`font-bold text-5 text-center`}>
-        Welcome to Driver mode
+        Welcome to Passenger mode
       </Text>
       <FlatList
         data={data}
@@ -65,7 +63,7 @@ const navOptions = ({uid}) => {
                 },
               })
             }
-            style={tw`p-3 m-3 rounded-sm shadow-sm `}>
+            style={tw`p-3 m-3 rounded-sm shadow-sm`}>
             <View>
               <Image
                 style={{
@@ -87,4 +85,4 @@ const navOptions = ({uid}) => {
   );
 };
 
-export default navOptions;
+export default NavPassenger;

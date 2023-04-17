@@ -12,7 +12,7 @@ import {Image, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import NavigationComponent from './NavigationComponent';
 import {useNavigation} from '@react-navigation/native';
-
+import NavigationComponentTwo from './NavigationComponentTwo';
 import Geolocation from '@react-native-community/geolocation';
 import {PermissionsAndroid} from 'react-native';
 
@@ -84,7 +84,18 @@ const NavigationScreen = ({navigation, route}) => {
           source={require('../assets/back.png')}
         />
       </TouchableOpacity>
-      {route.params.bool === 0 ? (
+      {route.params.rid == 0 ? (
+        <NavigationComponentTwo
+          puid={route.params.puid}
+          rid={route.params.rid}
+          origin={[longitude, latitude]}
+          destination={[passengerlongitude, passengerlatitude]}
+          driver_to={[drivertolongitude, drivertolatitude]}
+          // driverfromlocation={driverfromlocation}
+          drivertolocation={drivertolocation}
+          passengerlocation={passengerlocation}
+        />
+      ) : route.params.bool === 0 ? (
         <NavigationComponent
           puid={route.params.puid}
           rid={route.params.rid}
