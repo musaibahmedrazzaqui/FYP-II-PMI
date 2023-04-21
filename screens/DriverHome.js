@@ -29,10 +29,12 @@ import {
 // import Sidebar from './Sidebar';
 import Navbar from '../components/NavBar';
 import {SafeAreaView} from 'react-native';
+import Header from '../components/Header';
 
 const DriverHome = ({navigation, route}) => {
   const Navigation = useNavigation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [email, setEmail] = useState();
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
   const [check, setCheck] = useState(false);
@@ -62,6 +64,7 @@ const DriverHome = ({navigation, route}) => {
       .then(res => {
         if (res) {
           console.log('status', res.data.data[0].emailID);
+          setEmail(res.data.data[0].emailID);
           const status = res.data.data[0].status;
           if (status == 1) {
             console.log('statusssssss', res.data.data[0].status);
@@ -207,20 +210,7 @@ const DriverHome = ({navigation, route}) => {
           })
           .then(() => {
             console.log('buton presed');
-            axios
-              .post(`${server}/mailer/send-email`, {
-                email: email.value,
-              })
-              .then(() => {
-                console.log('email sent');
-                navigation.reset({
-                  index: 0,
-                  routes: [{name: 'LoginScreen'}],
-                });
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+
             navigation.navigate({
               name: 'DriversAcceptedRides',
               params: {
@@ -292,16 +282,44 @@ const DriverHome = ({navigation, route}) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }>
-      <View style={[styles.logoContainer, tw`mx-2 my-3 pt-1`]}>
-        <Text style={tw`text-2xl font-bold ml-33 mt-2`}>Pool Me In</Text>
-        <Icon
+      <View style={[styles.logoContainer]}>
+        {/* <Text style={[{color: 'darkblue'}, tw`text-2xl font-bold ml-33 mt-2`]}>
+          Pool Me In
+        </Text> */}
+        <View
+          style={{
+            flex: 1,
+            marginLeft: 30,
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Header>Pool Me In</Header>
+        </View>
+        <TouchableOpacity
+          // style={tw` w-9`}
+          style={{
+            alignItems: 'flex-end',
+            marginRight: 10,
+            marginTop: 12,
+            height: 25,
+            width: 25,
+          }}
+          onPress={() => {
+            loggedout();
+          }}>
+          <Image
+            style={styles.image}
+            source={require('../assets/logouticon.png')}></Image>
+        </TouchableOpacity>
+        {/* <Icon
           name="logout"
           style={tw` w-9`}
           color={'gray'}
           type="material"
           size={35}
           onPress={() => loggedout()}
-        />
+        /> */}
       </View>
       {checkone === true && <IncomingRide uid={showdata} />}
       {check === false && <SecondNavOptions uid={showdata} />}
@@ -432,6 +450,10 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
+  imageLogout: {
+    width: 2,
+    height: 2,
+  },
   button: {
     position: 'absolute',
     backgroundColor: 'red',
@@ -495,7 +517,11 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     display: 'flex',
+    flex: 0,
+    marginTop: 15,
+    marginRight: 20,
     flexDirection: 'row',
+    // alignItems: 'center',
     justifyContent: 'space-between',
   },
 });

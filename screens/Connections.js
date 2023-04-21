@@ -69,7 +69,7 @@ export default class MyFlatList extends Component {
       <View style={styles.searchContainer}>
         <View style={styles.StatusBar}>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('HomeScreen')}
+            onPress={() => this.props.navigation.navigate('PassengerHome')}
             style={{position: 'absolute', top: 15, left: 15}}>
             <Image
               style={{

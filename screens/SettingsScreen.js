@@ -22,8 +22,8 @@ import {useState} from 'react';
 const SettingsScreen = props => {
   const Navigation = useNavigation();
   const {theme} = props;
-  console.log(props.route.params.userid);
-  const [userid, setuserid] = useState(props.route.params.userid);
+  // console.log(props.route.params.userid);
+  const [userid, setuserid] = useState(38);
   return (
     <ScreenContainer
       style={styles.screenContainerJb}
@@ -47,7 +47,7 @@ const SettingsScreen = props => {
           source={Images.Model024}
         /> */}
         <TouchableOpacity
-          onPress={() => Navigation.navigate('HomeScreen')}
+          onPress={() => Navigation.navigate('NewHome')}
           style={{position: 'absolute', top: -50, left: -30}}>
           <Image
             style={{

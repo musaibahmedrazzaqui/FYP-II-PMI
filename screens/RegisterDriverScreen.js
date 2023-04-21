@@ -64,13 +64,7 @@ export default function FoodScreen({navigation, route}) {
     console.log(driverid, uid, cnic.value, license.value);
     navigation.reset({
       index: 0,
-      routes: [{name: 'HomeScreen'}],
-    });
-  };
-  const onToPressed = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'ToScreen'}],
+      routes: [{name: 'DriverHome'}],
     });
   };
 

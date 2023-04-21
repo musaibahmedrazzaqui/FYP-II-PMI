@@ -39,7 +39,16 @@ const NavBar = ({onClose, uid}) => {
             <Text style={styles.buttonText}>View Profile</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              Navigation.navigate({
+                name: 'SendReferral',
+                params: {
+                  userid: uid,
+                },
+              })
+            }>
             <Image
               style={styles.icon}
               source={require('../assets/requests.png')}
@@ -75,7 +84,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: '75%',
-    backgroundColor: 'white',
+    backgroundColor: '#161642',
   },
   contentContainer: {
     flex: 1,
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    color: 'black',
+    color: 'white',
     marginLeft: 12,
     fontFamily: 'Roboto-Regular',
   },

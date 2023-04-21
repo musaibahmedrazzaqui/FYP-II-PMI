@@ -41,7 +41,7 @@ const Navigation = props => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => Navigat.navigate('HomeScreen')}
+        onPress={() => Navigat.navigate('DriverHome')}
         style={{position: 'absolute', top: -50, left: -30}}>
         <Image
           style={{

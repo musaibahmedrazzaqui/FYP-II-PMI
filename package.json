@@ -17,6 +17,7 @@
     "@react-native-community/geolocation": "^3.0.3",
     "@react-native-mapbox-gl/maps": "^8.6.0-beta.0",
     "@react-native-picker/picker": "^2.4.8",
+    "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/drawer": "^6.6.2",
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.8.0",

@@ -76,15 +76,20 @@ export default function RegisterScreen({navigation}) {
             alert(
               'Sucessfully submitted! Please check your email to verify your account and complete your sign up process.',
             );
+            // let insertid = res.data.insertId;
             axios
               .post(`${server}/mailer/send-email`, {
                 email: email.value,
               })
               .then(() => {
-                console.log('email sent');
-                navigation.reset({
-                  index: 0,
-                  routes: [{name: 'LoginScreen'}],
+                console.log('email sent', res.data.insertId);
+                let url = `${server}/blockchain/addaddress/${res.data.data.insertId}`;
+                console.log(url);
+                axios.get(url).then(() => {
+                  navigation.reset({
+                    index: 0,
+                    routes: [{name: 'LoginScreen'}],
+                  });
                 });
               })
               .catch(function (error) {

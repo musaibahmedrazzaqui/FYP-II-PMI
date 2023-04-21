@@ -20,12 +20,12 @@ export default function Button({mode, style, ...props}) {
 
 const styles = StyleSheet.create({
   button: {
-    width: '70%',
+    width: '50%',
   },
   text: {
     fontWeight: 'bold',
     fontSize: 20,
-    lineHeight: 20,
+    lineHeight: 30,
 
     // marginBottom: -10,
   },

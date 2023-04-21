@@ -1,6 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {TouchableOpacity, StyleSheet, View, ScrollView} from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  ScrollView,
+  Image,
+} from 'react-native';
 import {Text} from 'react-native-paper';
+import Geolocation from '@react-native-community/geolocation';
 import {fieldValidator} from '../helpers/fieldValidator';
 import Background from '../components/Background';
 import Logo from '../components/Logo';
@@ -66,6 +73,62 @@ export default function OfferRideScreen({navigation, route}) {
   };
   const decrementCount = () => {
     setCount(count - 50);
+  };
+  const getPlaceName = async (latitude, longitude) => {
+    // code to get coordinates by making API calls to mapbox endpoint
+
+    // const req =
+    //   'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
+    //   longitude +
+    //   ',' +
+    //   latitude +
+    //   '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw';
+    const req =
+      'https://nominatim.openstreetmap.org/reverse?lat=' +
+      latitude +
+      '&lon=' +
+      longitude +
+      '&format=json';
+
+    // console.log('req', req);
+
+    let coord = null;
+    let res = null;
+
+    // axios.get
+    try {
+      // console.log('before axiosos');
+      console.log('REQ', req);
+      axios.get(req).then(res => {
+        console.log(res);
+        const place = res.data;
+        setValue(
+          place.display_name.toString().split(' ').slice(0, 9).join(' '),
+        );
+        return textTwo;
+      });
+      //console.log(await res);
+    } catch (e) {
+      console.log(e); // eslint-disable-line
+    }
+
+    if (res == null) {
+      return;
+    }
+
+    // const place = await res.data;
+    // console.log(
+    //   'PLACE',
+    //   place.display_name.toString().split(' ').slice(0, 9).join(' '),
+    // );
+    // console.log('place', place.features[0].place_name);
+
+    // setValue(place.display_name.toString().split(' ').slice(0, 9).join(' '));
+    // return place.display_name.toString().split(' ').slice(0, 9).join(' ');
+    // setPlace(place.features[0].place_name);
+    // coord = {lat: latLng[1], lng: latLng[0]};
+    // console.log('coord', coord);
+    // console.log('places' + textTwo);
   };
 
   const onLoginPressed = () => {
@@ -363,6 +426,28 @@ export default function OfferRideScreen({navigation, route}) {
           {/* {calll()} */}
           {suggestions?.length > 0 && (
             <View style={styles.suggestion}>
+              <TouchableOpacity
+                style={styles.suggestionthree}
+                // key={index}
+                onPress={() => {
+                  // console.log(
+                  //   getPlaceName(route.params.latitude, route.params.longitude),
+                  // );
+                  Geolocation.getCurrentPosition(info => {
+                    settLatitude(info.coords.latitude);
+                    settLongitude(info.coords.longitude);
+                    getPlaceName(info.coords.latitude, info.coords.longitude);
+                  });
+                  setSuggestions([]);
+                  setPlaces('Use Current Location');
+                }}>
+                <Image
+                  source={require('../assets/geolcoation.jpg')}
+                  style={styles.icon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.suggestiontwo}>Use Current Location</Text>
+              </TouchableOpacity>
               {suggestions.map((suggestion, index) => {
                 return (
                   <TouchableOpacity
@@ -394,6 +479,28 @@ export default function OfferRideScreen({navigation, route}) {
           />
           {suggestionstwo?.length > 0 && (
             <View style={styles.suggestion}>
+              <TouchableOpacity
+                style={styles.suggestionthree}
+                // key={index}
+                onPress={() => {
+                  // console.log(
+                  //   getPlaceName(route.params.latitude, route.params.longitude),
+                  // );
+                  Geolocation.getCurrentPosition(info => {
+                    setfLatitude(info.coords.latitude);
+                    setfLongitude(info.coords.longitude);
+                    getPlaceName(info.coords.latitude, info.coords.longitude);
+                  });
+                  setSuggestions([]);
+                  setPlaces('Use Current Location');
+                }}>
+                <Image
+                  source={require('../assets/geolcoation.jpg')}
+                  style={styles.icon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.suggestiontwo}>Use Current Location</Text>
+              </TouchableOpacity>
               {suggestionstwo.map((suggestiontwo, index) => {
                 return (
                   <TouchableOpacity
@@ -502,6 +609,17 @@ const styles = StyleSheet.create({
   suggestiontwo: {
     paddingTop: 5,
 
+    maxWidth: 600,
+  },
+  icon: {
+    marginTop: 4,
+    width: 30,
+    height: 15,
+  },
+  suggestionthree: {
+    alignItems: 'center',
+    paddingTop: 5,
+    flexDirection: 'row',
     maxWidth: 600,
   },
   texton: {

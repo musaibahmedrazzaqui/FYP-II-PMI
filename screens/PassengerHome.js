@@ -92,16 +92,34 @@ const PassengerHome = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.logoContainer, tw`mx-2 my-3 pt-1`]}>
-        <Text style={tw`text-2xl font-bold ml-33 mt-2`}>Pool Me In</Text>
-        <Icon
+      <View style={[styles.logoContainer]}>
+        <Text style={[{color: 'darkblue'}, tw`text-2xl font-bold ml-33 mt-2`]}>
+          Pool Me In
+        </Text>
+        <TouchableOpacity
+          // style={tw` w-9`}
+          style={{
+            alignItems: 'flex-end',
+            marginRight: 10,
+            marginTop: 12,
+            height: 25,
+            width: 25,
+          }}
+          onPress={() => {
+            loggedout();
+          }}>
+          <Image
+            style={styles.image}
+            source={require('../assets/logouticon.png')}></Image>
+        </TouchableOpacity>
+        {/* <Icon
           name="logout"
           style={tw` w-9`}
           color={'gray'}
           type="material"
           size={35}
           onPress={() => loggedout()}
-        />
+        /> */}
       </View>
       {showdata && <NavPassenger uid={showdata} />}
 
@@ -152,8 +170,9 @@ const styles = StyleSheet.create({
   toggleButton: {
     position: 'absolute',
     top: 18,
-    right: 350,
+    right: 340,
     padding: 8,
+    alignItems: 'flex-start',
     backgroundColor: 'transparent',
     borderRadius: 8,
   },
@@ -167,7 +186,11 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     display: 'flex',
+    flex: 0,
+    marginTop: 15,
+    marginRight: 20,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
 });
