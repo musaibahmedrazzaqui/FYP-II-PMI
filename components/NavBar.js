@@ -31,7 +31,16 @@ const NavBar = ({onClose, uid}) => {
             <Text style={styles.buttonText}>Previous Trips</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              Navigation.navigate({
+                name: 'SettingsScreen',
+                params: {
+                  userid: uid,
+                },
+              })
+            }>
             <Image
               style={styles.icon}
               source={require('../assets/requests.png')}

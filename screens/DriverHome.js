@@ -19,7 +19,7 @@ import {
   Image,
   Text,
   StyleSheet,
-  Linking,
+  Alert,
   Modal,
   ActivityIndicator,
   ScrollView,
@@ -48,6 +48,11 @@ const DriverHome = ({navigation, route}) => {
   const [location, setLocation] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const isMounted = useRef(false);
+  async function deleteridereq() {
+    await axios.get(`${server}/rides/deleteridereq/${rideidx}`).then(res => {
+      console.log(res);
+    });
+  }
   async function fetch() {
     const data = await AsyncStorage.getItem('userdata');
     console.log('data', data);
@@ -63,9 +68,11 @@ const DriverHome = ({navigation, route}) => {
       .get(urltwo)
       .then(res => {
         if (res) {
-          console.log('status', res.data.data[0].emailID);
+          console.log('status', res.data.data[0].status);
           setEmail(res.data.data[0].emailID);
+          setrideidx(res.data.data[0].idridereqpassenger);
           const status = res.data.data[0].status;
+          console.log(status);
           if (status == 1) {
             console.log('statusssssss', res.data.data[0].status);
             setPassRideData(res.data.data);
@@ -73,12 +80,29 @@ const DriverHome = ({navigation, route}) => {
             alert(
               `${res.data.data[0].firstName} ${res.data.data[0].lastName} accepted your request.`,
             );
+            deleteridereq();
           } else if (status == -1) {
             alert(
               `${res.data.data[0].firstName} ${res.data.data[0].lastName} rejected ypur request.`,
             );
-          } else {
-            alert('No response from user');
+            deleteridereq();
+          } else if (status == 0) {
+            Alert.alert(
+              'No response!',
+              `No response from the user ${res.data.data[0].firstName} ${res.data.data[0].lastName} !`,
+              [
+                {
+                  text: 'Keep waiting',
+                },
+                {
+                  text: 'Delete request',
+                  onPress: () => {
+                    deleteridereq();
+                  },
+                },
+              ],
+              {cancelable: false},
+            );
           }
         }
         // console.log('OYEHPYE', res.data.data[0]);
@@ -207,12 +231,13 @@ const DriverHome = ({navigation, route}) => {
             passridedata: passridedata,
             did: res.data.data[0].DriverID,
             rid: rid,
+            idridereq: rideidx,
           })
           .then(() => {
             console.log('buton presed');
 
             navigation.navigate({
-              name: 'DriversAcceptedRides',
+              name: 'AllRidesScreen',
               params: {
                 userid: showdata,
               },
@@ -240,6 +265,7 @@ const DriverHome = ({navigation, route}) => {
             lat: latitude,
             long: longitude,
             loc: location,
+            idridereq: rideidx,
           })
           .then(() => {
             console.log('buton presed');

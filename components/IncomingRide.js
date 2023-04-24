@@ -22,7 +22,7 @@ const data = [
     id: '3',
     title: 'View Requests',
     image: require('../assets/requests.png'),
-    screen: 'DriversAcceptedRides',
+    screen: 'AllRidesScreen',
   },
   {
     id: '4',

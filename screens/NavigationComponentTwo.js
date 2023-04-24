@@ -17,6 +17,7 @@ const Navigation = props => {
     'https://pmisocketserver-production.up.railway.app/driver-location';
   //const DRIVER_API_URL = 'http://10.0.2.2:3000/driver-location';
   useEffect(() => {
+    console.log('PROPS', props);
     const watchId = Geolocation.watchPosition(
       position => {
         const {longitude, latitude} = position.coords;
@@ -54,7 +55,6 @@ const Navigation = props => {
       <View style={styles.mapContainer}>
         {/* {console.log(origin)} */}
         <MapboxNavigation
-          style={{height: '85%'}}
           showsEndOfRouteFeedback={true}
           shouldSimulateRoute={true}
           origin={origin}

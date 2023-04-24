@@ -10,18 +10,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import Background from '../components/Background';
-import {
-  Pusher,
-  PusherMember,
-  PusherChannel,
-  PusherEvent,
-} from '@pusher/pusher-websocket-react-native';
-import {Alert} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+
 import axios from 'axios';
 import server from './globals';
-import PickupDestination from '../components/PickupDestination2';
-import TextInput from '../components/TextInput';
 import DirectionsDisplay from '../components/DirectionsDisplay';
 import Header from '../components/Header';
 
@@ -145,18 +136,14 @@ const ListPassengerRides = ({navigation, route}) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const fetchData = async () => {
-    try {
-      console.log('UID', route.params?.userid);
-      const response = await axios.get(
-        `${server}/rides/ridereqpassenger/${route.params?.userid}`,
-      );
-      console.log(response.data.data);
-      setData(response.data.data);
-      setRefreshing(false);
-    } catch (error) {
-      console.log(error);
-      setRefreshing(false);
-    }
+    console.log('UID', route.params?.userid);
+    let url = `${server}/rides/ridereqpassenger/${route.params?.userid}`;
+    console.log('URL', url);
+    const response = await axios.get(url);
+    // console.log('RESPONSE', response.data.data);
+    console.log(url);
+    setData(response.data.data);
+    setRefreshing(false);
   };
 
   useEffect(() => {

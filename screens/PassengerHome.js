@@ -38,8 +38,12 @@ const PassengerHome = ({navigation, route}) => {
   async function loggedout(key) {
     try {
       await AsyncStorage.removeItem('userdata');
-      Navigation.navigate('StartScreen');
+
       console.log(`Item ${key} has been removed from AsyncStorage.`);
+      Navigation.reset({
+        index: 0,
+        routes: [{name: 'StartScreen'}],
+      });
     } catch (error) {
       console.log(`Error removing item ${key} from AsyncStorage: ${error}`);
     }

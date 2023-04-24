@@ -15,6 +15,7 @@ import server from './globals';
 import PickupDestination from '../components/PickupDestination2';
 import TextInput from '../components/TextInput';
 import DirectionsDisplay from '../components/DirectionsDisplay';
+import Background from '../components/Background';
 
 const styles = StyleSheet.create({
   container: {
@@ -296,7 +297,7 @@ const GetPassengerRides = ({navigation, route}) => {
   );
 
   return (
-    <View style={styles.container}>
+    <Background style={styles.container}>
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -305,7 +306,7 @@ const GetPassengerRides = ({navigation, route}) => {
         onRefresh={handleRefresh}
       />
       {renderModal()}
-    </View>
+    </Background>
   );
 };
 

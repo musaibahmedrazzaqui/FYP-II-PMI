@@ -49,7 +49,7 @@ const NavigationScreen = ({navigation, route}) => {
   };
   const Navigation = useNavigation();
   useEffect(() => {
-    console.log('puid', route.params.puid);
+    console.log('NavigationScreen', route.params);
     Geolocation.getCurrentPosition(info => {
       setLat(info.coords.latitude);
       setLong(info.coords.longitude);

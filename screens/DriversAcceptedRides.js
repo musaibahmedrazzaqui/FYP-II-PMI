@@ -48,29 +48,25 @@ const DriversAcceptedRides = ({navigation, route}) => {
       setlatitude(info.coords.latitude);
       setlongitude(info.coords.longitude);
     });
-    console.log('userid', route.params.userid);
-    axios.get(`${server}/rides/${route.params?.userid}`).then(res => {
-      // console.log('DID', did);
-      const rid = res.data.data[0].RideID;
-      console.log(res.data.data[0].RideID);
-      // console.log(response);
-      axios
-        .get(
-          `${server}/rides/driveracceptedrides/${route.params?.userid}/${rid}`,
-        )
-        .then(res => {
-          const response = res.data;
-          if (response.error == 0) {
-            console.log('res.data', res.data.data);
-            //   setRides(getRidedata(response.data));
-            setRides(response.data);
-            setCount(response.data.length);
-            //   console.log(count);
-          } else {
-            console.log('error');
-          }
-        });
-    });
+    // console.log('userid', route.params.userid);
+    console.log('RIDEindriversaccepted', route.params.ride);
+
+    axios
+      .get(
+        `${server}/rides/driveracceptedrides/${route.params?.ride.DriverUserID}/${route.params?.ride.RideID}`,
+      )
+      .then(res => {
+        const response = res.data;
+        if (response.error == 0) {
+          console.log('res.data', res.data.data);
+          //   setRides(getRidedata(response.data));
+          setRides(response.data);
+          setCount(response.data.length);
+          //   console.log(count);
+        } else {
+          console.log('error');
+        }
+      });
   }, []);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +98,8 @@ const DriversAcceptedRides = ({navigation, route}) => {
         <BackButton goBack={navigation.goBack} />
         <Text style={styles.header}>ACCEPTED REQUESTS ON YOUR RIDE</Text>
         {console.log('rides', rides)}
-        {rides[0] && (
+        {/* {rides[0] ? ():()} */}
+        {rides[0] ? (
           <View
             style={[
               styles.rideDetails,
@@ -236,7 +233,7 @@ const DriversAcceptedRides = ({navigation, route}) => {
                             //     console.log(error);
                             //   });
                             navigation.navigate({
-                              name: 'NavigationScreen',
+                              name: 'NavigationS  creen',
                               params: {
                                 puid: rides[0].PassengerID,
                                 rid: rides[0].RideID,
@@ -259,6 +256,8 @@ const DriversAcceptedRides = ({navigation, route}) => {
               </Card>
             </TouchableOpacity>
           </View>
+        ) : (
+          <Header>No Passengers Yet</Header>
         )}
         {rides[1] && (
           <View

@@ -9,6 +9,9 @@ import {
   withTheme,
 } from '@draftbit/ui';
 import tw from 'twrnc';
+import axios from 'axios';
+import server from './globals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {
   Image,
@@ -18,12 +21,37 @@ import {
   Text,
   View,
 } from 'react-native';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 const SettingsScreen = props => {
   const Navigation = useNavigation();
   const {theme} = props;
+
+  const [userid, setuserid] = useState();
+  const [userdata, setuserdata] = useState();
+  async function fetch() {
+    setuserid(await AsyncStorage.getItem('userdata'));
+  }
+  useEffect(() => {
+    fetch();
+  }, []);
+  useEffect(() => {
+    if (userid != null) {
+      let url = `${server}/rides/getName/${userid}`;
+      console.log(url);
+      axios
+        .get(url)
+        .then(res => {
+          console.log('sdasdsad', res.data.data[0].firstName);
+          setuserdata(res.data.data[0]);
+          console.log('USERDATA', userdata);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }, [userid]);
+
   // console.log(props.route.params.userid);
-  const [userid, setuserid] = useState(38);
   return (
     <ScreenContainer
       style={styles.screenContainerJb}
@@ -57,12 +85,13 @@ const SettingsScreen = props => {
             source={require('../assets/back.png')}
           />
         </TouchableOpacity>
+        {console.log('USERDATA', userdata)}
         <Text
           style={StyleSheet.flatten([
             styles.textPr,
             theme.typography.headline3,
           ])}>
-          Musaib Ahmed
+          {userdata?.firstName} {userdata?.lastName}
         </Text>
         {/* <Button style={styles.buttonP2}>
           Edit Profile
