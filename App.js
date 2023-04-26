@@ -2,6 +2,7 @@ import {Provider} from 'react-redux';
 
 // Screens
 import AllRidesScreen from './screens/AllRidesScreen';
+import EnterReferral from './screens/EnterReferral';
 import HomeScreen from './screens/HomeScreen';
 import SendReferral from './screens/SendReferral';
 import DriverEndScreen from './screens/DriverEndScreen';
@@ -101,6 +102,13 @@ export function LoggedinStack() {
       <Stack.Screen
         name="SendReferral"
         component={SendReferral}
+        options={{
+          headerShown: false,
+        }}
+      />
+<Stack.Screen
+        name="EnterReferral"
+        component={EnterReferral}
         options={{
           headerShown: false,
         }}
@@ -349,6 +357,13 @@ export default function App() {
               <Stack.Screen
                 name="SendReferral"
                 component={SendReferral}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="EnterReferral"
+                component={EnterReferral}
                 options={{
                   headerShown: false,
                 }}

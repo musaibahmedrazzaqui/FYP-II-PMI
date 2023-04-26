@@ -9,16 +9,19 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import {Card} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const EnterReferral = () => {
+const EnterReferral = ({navigation, route}) => {
   const [email, setEmail] = useState('');
   const [userEmail, setuseremail] = useState('');
   const [showdata, setShowdata] = useState(null);
   const [referralCode, setReferralCode] = useState('');
+  const [codeGenerated, setCodeGenerated] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(false);
   async function fetch() {
     const data = await AsyncStorage.getItem('userdata');
     console.log('data', data);
+    console.log('uid', route.params.userid);
     setShowdata(await AsyncStorage.getItem('userdata'));
-    let url = `${server}/rides/getName/${data}`;
+    let url = `${server}/rides/getName/${route.params.userid}`;
     console.log(url);
     axios.get(url).then(res => {
       //    console.log(res.data.data[0].firstName);
@@ -30,7 +33,7 @@ const EnterReferral = () => {
   }, []);
 
   const handleEmailChange = text => {
-    setReferralCode(text);
+    setEmail(text);
     // setIsValidEmail(validateEmail(text));
   };
   const showAlert = () => {
@@ -50,72 +53,73 @@ const EnterReferral = () => {
       {cancelable: false},
     );
   };
-  const handlePress = () => {
-    if (userEmail == email) {
-      showAlert();
-    } else {
-      axios
-        .post(`${server}/referral/validatecode`, {
-          referralCode: referralCode,
-          email: userEmail,
-        })
-        .then(res => {
-          let response = res.data.data;
-          if (response.length > 0) {
-            Alert.alert('Correct!', 'Redirecting you to Home!');
-          }
-          // console.log('code sent', res);
-          console.log('res', res.data.data[0]);
-          // navigation.reset({
-          //     index: 0,
-          //     routes: [{ name: 'LoginScreen' }],
-          // });
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      Alert.alert(
-        'Email Sent!',
-        `Email has been sent to ${email} !`,
-        [
-          {
-            text: 'OK',
-            onPress: () => console.log('OK Pressed'),
-          },
-        ],
-        {cancelable: true},
-      );
-    }
+
+  const generateCode = () => {
+    console.log(userEmail);
+    axios
+      .post(`${server}/referral/validatecode`, {
+        ToUserEmail: userEmail,
+        referralCode: email,
+      })
+      .then(res => {
+        if (res.data.error == 0) {
+          console.log(res.data.data[0]);
+          axios
+            .post(`${server}/blockchain/pushcode`, {
+              FromUserID: res.data.data[0].FromUserID,
+              ToUserEmail: userEmail,
+              referralCode: email,
+            })
+            .then(res => {
+              if (res) {
+                axios
+                  .get(`${server}/rides/referral-entered/${userEmail}`)
+                  .then(res => {
+                    console.log('RES', res);
+
+                    alert(
+                      'Referral code entered Sucessfully. Redirecting you to login page!',
+                    );
+                    navigation.navigate({name: 'LoginScreen'});
+                  });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } else {
+          alert(
+            "You don't have a valid referral code! \n Every user needs a referral to use our app. Please ask your friends and fanily to send you a 8-digit code on your registered email address",
+          );
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
+
   return (
     <Background>
-      <Header>
-        Enter the Referral Code you received to start using PoolMeIn!
-      </Header>
-      {/* <Text>Enter a valid email to enable the button!</Text> */}
+      <Header>Enter Referral Code.</Header>
       <TextInput
-        label="Enter code"
-        value={referralCode}
+        label="Enter Code"
+        value={email}
         onChangeText={handleEmailChange}
       />
-
-      <View style={{width: '75%'}}>
-        <Card style={{marginVertical: 5}}>
-          <Card.Title
-            style={{textAlign: 'center'}}
-            title="Your Referral Code"
-          />
-          <Card.Content>
-            <Text
-              style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-              {referralCode}
-            </Text>
-          </Card.Content>
-        </Card>
-        <Button mode="contained" onPress={handlePress}>
-          Validate
+      {email.length === 8 ? (
+        <Button mode="contained" onPress={generateCode}>
+          {console.log('it is i ', email)}
+          Enter!
         </Button>
-      </View>
+      ) : (
+        <Button
+          mode="contained"
+          onPress={generateCode}
+          disabled={!isValidEmail}>
+          Enter!
+          {console.log(email)}
+        </Button>
+      )}
     </Background>
   );
 };

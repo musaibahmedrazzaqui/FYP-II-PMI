@@ -93,7 +93,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: '75%',
+    height:'150%',
     backgroundColor: '#161642',
+    // opacity:'100%',
   },
   contentContainer: {
     flex: 1,

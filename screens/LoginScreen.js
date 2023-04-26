@@ -48,7 +48,7 @@ export default function LoginScreen({navigation}) {
         emailID: email.value,
         password: hashed.value,
       })
-      .then(async res => {
+      .then( res => {
         console.log(email.value);
         console.log('sdaaaaaaaaaaaaaa', res);
         // setUid(obj[0].userID);
@@ -57,7 +57,7 @@ export default function LoginScreen({navigation}) {
           // console.log(userid);
           console.log('mujhe dekho', res.data.token);
           var uid = res.data.data[0].userID;
-          const userdata = await AsyncStorage.setItem(
+          const userdata =  AsyncStorage.setItem(
             'userdata',
             res.data.data[0].userID.toString(),
           );
@@ -68,7 +68,7 @@ export default function LoginScreen({navigation}) {
               userid: uid,
             },
           });
-        } else if (res.data.error == 1) {
+        } else if (res.data.error == 4) {
           alert('Email and passwords do not match');
           navigation.reset({
             index: 0,
@@ -82,6 +82,15 @@ export default function LoginScreen({navigation}) {
             index: 0,
             routes: [{name: 'LoginScreen'}],
           });
+        } else if(res.data.error==5){
+          alert("Referral not entered!")
+          console.log(res.data.data[0])
+           navigation.navigate({
+             name: 'EnterReferral',
+             params: {
+               userid: res.data.data[0].userID,
+             },
+           });
         } else {
           alert('Email does not exist');
           navigation.reset({

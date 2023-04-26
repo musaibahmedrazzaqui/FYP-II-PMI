@@ -1,6 +1,7 @@
 // import {View, Text, StyleSheet} from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import Header from '../components/Header';
 import tw from 'twrnc';
 import {Icon} from 'react-native-elements';
 import NavPassenger from '../components/NavPassenger';
@@ -21,8 +22,10 @@ import {
 // import Sidebar from './Sidebar';
 import Navbar from '../components/NavBar';
 import {SafeAreaView} from 'react-native';
+const {width, height} = Dimensions.get('window');
 const PassengerHome = ({navigation, route}) => {
   const Navigation = useNavigation();
+  // const { width, height } = Dimensions.get("window");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [check, setCheck] = useState(false);
   const [checkone, setCheckone] = useState(false);
@@ -95,35 +98,35 @@ const PassengerHome = ({navigation, route}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <View style={[styles.logoContainer]}>
-        <Text style={[{color: 'darkblue'}, tw`text-2xl font-bold ml-33 mt-2`]}>
+      <TouchableOpacity
+          onPress={toggleSidebar}
+          style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image
+            style={styles.image}
+            source={require('../assets/sidebar.jpg')}
+          />
+        </TouchableOpacity>
+        
+
+        <Text
+          style={{
+            color: 'darkblue',
+            fontSize: 25,
+            fontWeight: 'bold',
+            marginLeft: 'auto',
+          }}>
           Pool Me In
         </Text>
         <TouchableOpacity
-          // style={tw` w-9`}
-          style={{
-            alignItems: 'flex-end',
-            marginRight: 10,
-            marginTop: 12,
-            height: 25,
-            width: 25,
-          }}
-          onPress={() => {
-            loggedout();
-          }}>
+          onPress={() => loggedout()}
+          style={{marginLeft: 'auto'}}>
           <Image
             style={styles.image}
-            source={require('../assets/logouticon.png')}></Image>
+            source={require('../assets/logouticon.png')}
+          />
         </TouchableOpacity>
-        {/* <Icon
-          name="logout"
-          style={tw` w-9`}
-          color={'gray'}
-          type="material"
-          size={35}
-          onPress={() => loggedout()}
-        /> */}
       </View>
       {showdata && <NavPassenger uid={showdata} />}
 
@@ -131,7 +134,8 @@ const PassengerHome = ({navigation, route}) => {
       {/* ... */}
 
       {/* Sidebar */}
-      {isSidebarOpen == true ? (
+
+      {isSidebarOpen == true && (
         <>
           <Navbar
             uid={showdata}
@@ -143,15 +147,8 @@ const PassengerHome = ({navigation, route}) => {
             onPress={toggleSidebar}>
             <Image
               style={styles.image}
-              source={require('../assets/close-window.png')}></Image>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <TouchableOpacity style={styles.toggleButton} onPress={toggleSidebar}>
-            <Image
-              style={styles.image}
-              source={require('../assets/sidebar.jpg')}></Image>
+              source={require('../assets/close-window.png')}
+            />
           </TouchableOpacity>
         </>
       )}
@@ -164,37 +161,29 @@ const PassengerHome = ({navigation, route}) => {
 export default PassengerHome;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     // Other styles for the main container of HomeScreen
   },
-  image: {
-    width: 24,
-    height: 24,
-  },
-  toggleButton: {
-    position: 'absolute',
-    top: 18,
-    right: 340,
-    padding: 8,
-    alignItems: 'flex-start',
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-  },
-  toggleButtonTwo: {
-    position: 'absolute',
-    top: 18,
-    right: 100,
-    padding: 8,
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-  },
   logoContainer: {
-    display: 'flex',
-    flex: 0,
-    marginTop: 15,
-    marginRight: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: height * 0.03,
+    paddingHorizontal: width * 0.06,
+  },
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flex: 1,
+  },
+  toggleButtonTwo: {
+    position: 'absolute',
+    marginLeft: '70%',
+    alignSelf: 'flex-start',
+  },
+  image: {
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
   },
 });
