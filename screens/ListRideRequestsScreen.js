@@ -129,20 +129,7 @@ const ListRideRequestsScreen = ({navigation, route}) => {
                             console.log(error);
                           });
                         navigation.navigate({
-                          name: 'DriversAcceptedRides',
-                          params: {
-                            userid: item.DriverUserID,
-                            rideid: item.RideID,
-                            driverfromlatitude: item.dLatitude,
-                            driverfromlongitude: item.drLongitude,
-                            driverfromlocation: item.DriverfLocation,
-                            drivertolatitude: item.to_latitude,
-                            drivertolongitude: item.to_longitude,
-                            drivertolocation: item.to_location,
-                            passengerlatitude: item.latitude,
-                            passengerlongitude: item.longitude,
-                            passengerlocation: item.location,
-                          },
+                          name: 'NewHome',
                         });
                       }}>
                       Accept
