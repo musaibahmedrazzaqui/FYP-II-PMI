@@ -88,6 +88,8 @@ const DriversAcceptedRides = ({navigation, route}) => {
 
   const showModal = (lat, long) => {
     setModalVisible(true);
+    console.log(lat);
+    console.log(long);
     fetchData(lat, long);
     setSelected([parseFloat(long), parseFloat(lat)]);
   };
@@ -99,106 +101,60 @@ const DriversAcceptedRides = ({navigation, route}) => {
         <Text style={styles.header}>ACCEPTED REQUESTS ON YOUR RIDE</Text>
         {console.log('rides', rides)}
         {/* {rides[0] ? ():()} */}
-        {rides[0] ? (
-          <View
-            style={[
-              styles.rideDetails,
-              rides[0].StatusID === 2 && styles.blurred,
-            ]}>
-            <TouchableOpacity>
-              <Card>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    marginLeft: 18,
-                    marginTop: 20,
-                    color: 'black',
-                  }}>
-                  Passenger Name: {rides[0].PassengerFName}
-                  {rides[0].PassengerLName}
-                </Text>
-                {/* {getLocation(rides[item.id - 1])} */}
-                <Card.Content>
+        {rides.map((ride, index) => {
+          return (
+            <View
+              style={[
+                styles.rideDetails,
+                ride.StatusID === 2 && styles.blurred,
+              ]}>
+              <TouchableOpacity>
+                <Card>
                   <Text
                     style={{
-                      fontSize: 18,
-                      marginLeft: 0,
-                      marginTop: 10,
+                      fontSize: 25,
+                      marginLeft: 18,
+                      marginTop: 20,
                       color: 'black',
                     }}>
-                    Nearest Landmark:
+                    Passenger Name: {ride.PassengerFName}
+                    {ride.PassengerLName}
                   </Text>
-                  <TouchableOpacity>
-                    <Button
+                  {/* {getLocation(rides[item.id - 1])} */}
+                  <Card.Content>
+                    <Text
                       style={{
-                        marginTop: -30,
-                        marginLeft: 135,
-                        borderRadius: 5,
-                      }}
-                      onPress={() =>
-                        showModal(rides[0].PassengerLat, rides[0].PassengerLong)
-                      }>
-                      Show
-                    </Button>
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      marginLeft: 0,
-                      marginTop: 10,
-                      color: 'black',
-                    }}>
-                    Fare Decided: {rides[0].fareDecided} Rupees
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => Linking.openURL(`tel:${rides[0].Phone}`)}>
-                    <View
+                        fontSize: 18,
+                        marginLeft: 0,
+                        marginTop: 10,
+                        color: 'black',
+                      }}>
+                      Nearest Landmark:
+                    </Text>
+                    <TouchableOpacity>
+                      <Button
+                        style={{
+                          marginTop: -30,
+                          marginLeft: 135,
+                          borderRadius: 5,
+                        }}
+                        onPress={() =>
+                          showModal(ride.PassengerLat, ride.PassengerLong)
+                        }>
+                        Show
+                      </Button>
+                    </TouchableOpacity>
+                    <Text
                       style={{
-                        padding: 10,
-                        flexDirection: 'row',
-                        alignItems: 'center',
+                        fontSize: 18,
+                        marginLeft: 0,
+                        marginTop: 10,
+                        color: 'black',
                       }}>
-                      <Image
-                        source={require('../assets/dial1.jpg')}
-                        style={styles.imagetwo}
-                      />
-                      <Text style={styles.overlayTextTwo}>Press to Call!</Text>
-                    </View>
-                  </TouchableOpacity>
-                </Card.Content>
-
-                {rides[0].StatusID == 2 ? (
-                  <View
-                    style={{
-                      padding: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri: 'https://www.freepnglogos.com/uploads/tick-png/tick-paddy-power-hotshot-jackpot-first-goalscorer-predictor-18.png',
-                      }}
-                    />
-
-                    <Text style={styles.overlayText}>Passenger on Board!</Text>
-                    <Button
-                      style={{marginTop: -6}}
-                      onPress={() => {
-                        alert('Generating Receipt!');
-                        navigation.navigate({
-                          name: 'ReceiptScreen',
-                          params: {
-                            ride: rides[0],
-                          },
-                        });
-                      }}>
-                      Dropped?
-                    </Button>
-                  </View>
-                ) : (
-                  <View>
-                    {rides[0].StatusID == 3 ? (
+                      Fare Decided: {ride.fareDecided} Rupees
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => Linking.openURL(`tel:${ride.Phone}`)}>
                       <View
                         style={{
                           padding: 10,
@@ -206,112 +162,17 @@ const DriversAcceptedRides = ({navigation, route}) => {
                           alignItems: 'center',
                         }}>
                         <Image
+                          source={require('../assets/dial1.jpg')}
                           style={styles.imagetwo}
-                          source={require('../assets/bluetick.png')}
                         />
-
-                        <Text style={styles.overlayTextThree}>
-                          Passenger dropped!
+                        <Text style={styles.overlayTextTwo}>
+                          Press to Call!
                         </Text>
                       </View>
-                    ) : (
-                      <Card.Actions>
-                        <Button
-                          onPress={() => {
-                            alert('navigating!');
-                            // axios
-                            //   .get(`${server}/rides/accept/driveraccept`, {
-                            //     RideID: rides[0].RideID,
-                            //     PassengerID: rides[0].PassengerID,
-                            //     DriverID: rides[0].DriverID,
-                            //     fareDecided: rides[0].fareDecided,
-                            //   })
-                            //   .then(res => {
-                            //     console.log(res);
-                            //   })
-                            //   .catch(function (error) {
-                            //     console.log(error);
-                            //   });
-                            navigation.navigate({
-                              name: 'NavigationS  creen',
-                              params: {
-                                puid: rides[0].PassengerID,
-                                rid: rides[0].RideID,
-                                drivertolatitude: rides[0].DestLat,
-                                drivertolongitude: rides[0].DestLong,
-                                drivertolocation: rides[0].DestLocation,
-                                passengerlatitude: rides[0].PassengerLat,
-                                passengerlongitude: rides[0].PassengerLong,
-                                passengerlocation: rides[0].PassengerLocation,
-                              },
-                            });
-                          }}>
-                          Start Navigation
-                        </Button>
-                        <Button style={{color: 'red'}}>Reject</Button>
-                      </Card.Actions>
-                    )}
-                  </View>
-                )}
-              </Card>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <Header>No Passengers Yet</Header>
-        )}
-        {rides[1] && (
-          <View
-            style={[
-              styles.rideDetails,
-              rides[1].StatusID === 2 && styles.blurred,
-            ]}>
-            <TouchableOpacity>
-              <Card>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    marginLeft: 18,
-                    marginTop: 20,
-                    color: 'black',
-                  }}>
-                  Passenger Name: {rides[1].PassengerFName}
-                  {rides[1].PassengerLName}
-                </Text>
-                {/* {getLocation(rides[item.id - 1])} */}
-                <Card.Content>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      marginLeft: 0,
-                      marginTop: 10,
-                      color: 'black',
-                    }}>
-                    Nearest Landmark:
-                  </Text>
-                  <TouchableOpacity>
-                    <Button
-                      style={{
-                        marginTop: -30,
-                        marginLeft: 135,
-                        borderRadius: 5,
-                      }}
-                      onPress={() =>
-                        showModal(rides[1].PassengerLat, rides[1].PassengerLong)
-                      }>
-                      Show
-                    </Button>
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      marginLeft: 0,
-                      marginTop: 10,
-                      color: 'black',
-                    }}>
-                    Fare Decided: {rides[1].fareDecided} Rupees
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => Linking.openURL(`tel:${rides[1].Phone}`)}>
+                    </TouchableOpacity>
+                  </Card.Content>
+
+                  {ride.StatusID == 2 ? (
                     <View
                       style={{
                         padding: 10,
@@ -319,104 +180,93 @@ const DriversAcceptedRides = ({navigation, route}) => {
                         alignItems: 'center',
                       }}>
                       <Image
-                        source={require('../assets/dial1.jpg')}
-                        style={styles.imagetwo}
+                        style={styles.image}
+                        source={{
+                          uri: 'https://www.freepnglogos.com/uploads/tick-png/tick-paddy-power-hotshot-jackpot-first-goalscorer-predictor-18.png',
+                        }}
                       />
-                      <Text style={styles.overlayTextTwo}>Press to Call!</Text>
-                    </View>
-                  </TouchableOpacity>
-                </Card.Content>
 
-                {rides[1].StatusID == 2 ? (
-                  <View
-                    style={{
-                      padding: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <Image
-                      style={styles.image}
-                      source={{
-                        uri: 'https://www.freepnglogos.com/uploads/tick-png/tick-paddy-power-hotshot-jackpot-first-goalscorer-predictor-18.png',
-                      }}
-                    />
-
-                    <Text style={styles.overlayText}>Passenger on Board!</Text>
-                    <Button
-                      style={{marginTop: -6}}
-                      onPress={() => {
-                        alert('Generating Receipt!');
-                        navigation.navigate({
-                          name: 'ReceiptScreen',
-                          params: {
-                            ride: rides[1],
-                          },
-                        });
-                      }}>
-                      Dropped?
-                    </Button>
-                  </View>
-                ) : (
-                  <View>
-                    {rides[1].StatusID == 3 ? (
-                      <View
-                        style={{
-                          padding: 10,
-                          flexDirection: 'row',
-                          alignItems: 'center',
+                      <Text style={styles.overlayText}>
+                        Passenger on Board!
+                      </Text>
+                      <Button
+                        style={{marginTop: -6}}
+                        onPress={() => {
+                          alert('Generating Receipt!');
+                          navigation.navigate({
+                            name: 'ReceiptScreen',
+                            params: {
+                              ride: ride,
+                            },
+                          });
                         }}>
-                        <Image
-                          style={styles.imagetwo}
-                          source={require('../assets/bluetick.png')}
-                        />
-
-                        <Text style={styles.overlayTextThree}>
-                          Passenger dropped!
-                        </Text>
-                      </View>
-                    ) : (
-                      <Card.Actions>
-                        <Button
-                          onPress={() => {
-                            alert('navigating!');
-                            // axios
-                            //   .get(`${server}/rides/accept/driveraccept`, {
-                            //     RideID: rides[1].RideID,
-                            //     PassengerID: rides[1].PassengerID,
-                            //     DriverID: rides[1].DriverID,
-                            //     fareDecided: rides[1].fareDecided,
-                            //   })
-                            //   .then(res => {
-                            //     console.log(res);
-                            //   })
-                            //   .catch(function (error) {
-                            //     console.log(error);
-                            //   });
-                            navigation.navigate({
-                              name: 'NavigationScreen',
-                              params: {
-                                puid: rides[1].PassengerID,
-                                rid: rides[1].RideID,
-                                drivertolatitude: rides[1].DestLat,
-                                drivertolongitude: rides[1].DestLong,
-                                drivertolocation: rides[1].DestLocation,
-                                passengerlatitude: rides[1].PassengerLat,
-                                passengerlongitude: rides[1].PassengerLong,
-                                passengerlocation: rides[1].PassengerLocation,
-                              },
-                            });
+                        Dropped?
+                      </Button>
+                    </View>
+                  ) : (
+                    <View>
+                      {ride.StatusID == 3 ? (
+                        <View
+                          style={{
+                            padding: 10,
+                            flexDirection: 'row',
+                            alignItems: 'center',
                           }}>
-                          Start Navigation
-                        </Button>
-                        <Button style={{color: 'red'}}>Reject</Button>
-                      </Card.Actions>
-                    )}
-                  </View>
-                )}
-              </Card>
-            </TouchableOpacity>
-          </View>
-        )}
+                          <Image
+                            style={styles.imagetwo}
+                            source={require('../assets/bluetick.png')}
+                          />
+
+                          <Text style={styles.overlayTextThree}>
+                            Passenger dropped!
+                          </Text>
+                        </View>
+                      ) : (
+                        <Card.Actions>
+                          <Button
+                            onPress={() => {
+                              alert('navigating!');
+                              // axios
+                              //   .get(`${server}/rides/accept/driveraccept`, {
+                              //     RideID: ride.RideID,
+                              //     PassengerID: ride.PassengerID,
+                              //     DriverID: ride.DriverID,
+                              //     fareDecided: ride.fareDecided,
+                              //   })
+                              //   .then(res => {
+                              //     console.log(res);
+                              //   })
+                              //   .catch(function (error) {
+                              //     console.log(error);
+                              //   });
+                              navigation.navigate({
+                                name: 'NavigationScreen',
+                                params: {
+                                  puid: ride.PassengerID,
+                                  rid: ride.RideID,
+                                  drivertolatitude: ride.DestLat,
+                                  drivertolongitude: ride.DestLong,
+                                  drivertolocation: ride.DestLocation,
+                                  passengerlatitude: ride.PassengerLat,
+                                  passengerlongitude: ride.PassengerLong,
+                                  passengerlocation: ride.PassengerLocation,
+                                },
+                              });
+                            }}>
+                            Start Navigation
+                          </Button>
+                        </Card.Actions>
+                      )}
+                    </View>
+                  )}
+                </Card>
+              </TouchableOpacity>
+            </View>
+          );
+
+          // <Header>No Passengers Yet</Header>
+        })}
+
         <View
           style={{
             height: 50,
@@ -468,14 +318,14 @@ const DriversAcceptedRides = ({navigation, route}) => {
             name: 'NavigationScreen',
             params: {
               puid: 0,
-              rid: rides[1].RideID,
+              rid: rides[0].RideID,
               bool: 1,
-              drivertolatitude: rides[1].DestLat,
-              drivertolongitude: rides[1].DestLong,
-              drivertolocation: rides[1].DestLocation,
-              passengerlatitude: rides[1].PassengerLat,
-              passengerlongitude: rides[1].PassengerLong,
-              passengerlocation: rides[1].PassengerLocation,
+              drivertolatitude: rides[0].DestLat,
+              drivertolongitude: rides[0].DestLong,
+              drivertolocation: rides[0].DestLocation,
+              passengerlatitude: rides[0].PassengerLat,
+              passengerlongitude: rides[0].PassengerLong,
+              passengerlocation: rides[0].PassengerLocation,
             },
           })
         }

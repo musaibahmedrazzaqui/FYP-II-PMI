@@ -7,6 +7,9 @@ import {
   Image,
 } from 'react-native';
 import {Text} from 'react-native-paper';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+
+import DirectionsDisplay from '../components/DirectionsDisplay';
 import Geolocation from '@react-native-community/geolocation';
 import {fieldValidator} from '../helpers/fieldValidator';
 import Background from '../components/Background';
@@ -20,6 +23,8 @@ import {theme} from '../core/theme';
 import server from './globals';
 import axios from 'axios';
 // import { Dropdown } from "react-native-material-dropdown";
+
+const GOOGLE_MAPS_API_KEY = 'AIzaSyAhpqm1hIWBkVzKvf7uyqCmYNRxwQwbZzo';
 export default function OfferRideScreen({navigation, route}) {
   const [from, setFrom] = useState('true');
   const [did, setdId] = useState(0);
@@ -42,6 +47,14 @@ export default function OfferRideScreen({navigation, route}) {
   const [suggestions, setSuggestions] = useState([]);
 
   const [suggestionstwo, setSuggestionsTwo] = useState([]);
+
+  const [fromLocation, setFromLocation] = useState('');
+  const [toLocation, setToLocation] = useState('');
+  const [fromLatitude, setFromLatitude] = useState(0);
+  const [fromLongitude, setFromLongitude] = useState(0);
+  const [toLatitude, setToLatitude] = useState(0);
+  const [toLongitude, setToLongitude] = useState(0);
+  const [shouldRenderComponent, setShouldRenderComponent] = useState(false);
   // const {navigate} = this.props.navigation;
 
   useEffect(() => {
@@ -67,6 +80,38 @@ export default function OfferRideScreen({navigation, route}) {
     console.log('TO' + tolatitude + '   ' + tolongitude);
     // console.log(route.params?.userid);
   }, []);
+  useEffect(() => {
+    if (
+      fromLatitude !== 0 &&
+      fromLongitude !== 0 &&
+      toLatitude !== 0 &&
+      toLongitude !== 0
+    ) {
+      setShouldRenderComponent(true);
+    } else {
+      setShouldRenderComponent(false);
+    }
+  }, [fromLatitude, fromLongitude, toLatitude, toLongitude]);
+  const handleFromLocationSelect = (data, details = null) => {
+    const {description, geometry} = details;
+    console.log(data.description);
+    console.log(geometry);
+    setFromLocation(data.description);
+    setFromLatitude(geometry.location.lat);
+    setFromLongitude(geometry.location.lng);
+    // console.log('DATA', data);
+    // console.log('DETAILS', details.geometry);
+  };
+
+  const handleToLocationSelect = (data, details = null) => {
+    const {description, geometry} = details;
+    console.log(data.description);
+    console.log(geometry);
+    // setFromLocation(data.description);
+    setToLocation(data.description);
+    setToLatitude(geometry.location.lat);
+    setToLongitude(geometry.location.lng);
+  };
   const incrementCount = () => {
     // Update state with incremented value
     setCount(count + 50);
@@ -82,7 +127,7 @@ export default function OfferRideScreen({navigation, route}) {
     //   longitude +
     //   ',' +
     //   latitude +
-    //   '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw';
+    //   '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
     const req =
       'https://nominatim.openstreetmap.org/reverse?lat=' +
       latitude +
@@ -132,10 +177,10 @@ export default function OfferRideScreen({navigation, route}) {
   };
 
   const onLoginPressed = () => {
-    console.log(cars);
-    console.log('FROM' + fromlatitude + '   ' + fromlongitude);
+    // console.log(cars);
+    // console.log('FROM' + fromlatitude + '   ' + fromlongitude);
 
-    console.log('TO' + tolatitude + '   ' + tolongitude);
+    // console.log('TO' + tolatitude + '   ' + tolongitude);
     const fieldError = fieldValidator(fare.value);
     const fieldError2 = fieldValidator(seats.value);
     if (fieldError || fieldError2) {
@@ -208,22 +253,6 @@ export default function OfferRideScreen({navigation, route}) {
       .catch(function (error) {
         console.log(error);
       });
-    // alert('Ride has been posted!');
-    // axios.get(`${server}/rides/${did}`).then(res => {
-    //   console.log('DID', did);
-    //   const response = res.data.error;
-    //   if (response == 0) {
-    //     setFrom('true');
-    //     navigation.navigate({
-    //       name: 'HomeScreen',
-    //       params: {post: from},
-    //     });
-    //   } else {
-    //     navigation.navigate({
-    //       name: 'HomeScreen',
-    //     });
-    //   }
-    // });
   };
   const handleChange = async event => {
     const {eventCount, target, text} = event.nativeEvent;
@@ -232,7 +261,7 @@ export default function OfferRideScreen({navigation, route}) {
     setValue(str);
     // console.log(str);
 
-    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw`;
+    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw`;
     let response;
     try {
       response = await fetch(endpoint);
@@ -253,7 +282,7 @@ export default function OfferRideScreen({navigation, route}) {
     setValuetwo(str);
     // console.log(str);
 
-    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw`;
+    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw`;
     let response;
     try {
       response = await fetch(endpoint);
@@ -277,7 +306,7 @@ export default function OfferRideScreen({navigation, route}) {
     const req =
       'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
       name +
-      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw';
+      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
 
     console.log('req', req);
 
@@ -336,7 +365,7 @@ export default function OfferRideScreen({navigation, route}) {
     const req =
       'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
       name +
-      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw';
+      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
 
     console.log('req', req);
 
@@ -408,153 +437,85 @@ export default function OfferRideScreen({navigation, route}) {
           </Button>
         </>
       ) : (
-        <ScrollView
-          contentContainerStyle={{
-            alignItems: 'center',
-            marginTop: 15,
-            width: 300,
-          }}>
+        <Background>
           {/* <Logo /> */}
-          <Header>Where are you travelling to?</Header>
-          <TextInput
-            style={styles.input}
-            label="From Where"
-            value={textTwo}
-            onChange={textTwo => handleChange(textTwo)}
-            isTyping={textTwo !== ''}
-          />
-          {/* {calll()} */}
-          {suggestions?.length > 0 && (
-            <View style={styles.suggestion}>
-              <TouchableOpacity
-                style={styles.suggestionthree}
-                // key={index}
-                onPress={() => {
-                  // console.log(
-                  //   getPlaceName(route.params.latitude, route.params.longitude),
-                  // );
-                  Geolocation.getCurrentPosition(info => {
-                    settLatitude(info.coords.latitude);
-                    settLongitude(info.coords.longitude);
-                    getPlaceName(info.coords.latitude, info.coords.longitude);
-                  });
-                  setSuggestions([]);
-                  setPlaces('Use Current Location');
-                }}>
-                <Image
-                  source={require('../assets/geolcoation.jpg')}
-                  style={styles.icon}
-                  resizeMode="contain"
-                />
-                <Text style={styles.suggestiontwo}>Use Current Location</Text>
-              </TouchableOpacity>
-              {suggestions.map((suggestion, index) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.suggestiontwo}
-                    key={index}
-                    onPress={() => {
-                      setValue(suggestion.place_name);
-                      setSuggestions([]);
-                      setPlaces(suggestion.place_name);
-                      const sLower = suggestion.place_name.toLowerCase();
-                      console.log('slower', sLower);
-                      let srcCoord = null;
-                      getCoordinates(sLower);
-                    }}>
-                    <Text style={styles.suggestiontwo}>
-                      {suggestion.place_name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-          <TextInput
-            style={styles.input}
-            label="To Where"
-            value={textThree}
-            onChange={textThree => handleChangetwo(textThree)}
-            isTyping={textThree !== ''}
-          />
-          {suggestionstwo?.length > 0 && (
-            <View style={styles.suggestion}>
-              <TouchableOpacity
-                style={styles.suggestionthree}
-                // key={index}
-                onPress={() => {
-                  // console.log(
-                  //   getPlaceName(route.params.latitude, route.params.longitude),
-                  // );
-                  Geolocation.getCurrentPosition(info => {
-                    setfLatitude(info.coords.latitude);
-                    setfLongitude(info.coords.longitude);
-                    getPlaceName(info.coords.latitude, info.coords.longitude);
-                  });
-                  setSuggestions([]);
-                  setPlaces('Use Current Location');
-                }}>
-                <Image
-                  source={require('../assets/geolcoation.jpg')}
-                  style={styles.icon}
-                  resizeMode="contain"
-                />
-                <Text style={styles.suggestiontwo}>Use Current Location</Text>
-              </TouchableOpacity>
-              {suggestionstwo.map((suggestiontwo, index) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.suggestiontwo}
-                    key={index}
-                    onPress={() => {
-                      setValuetwo(suggestiontwo.place_name);
-                      setSuggestionsTwo([]);
-                      setPlaces(suggestiontwo.place_name);
-                      const sLower = suggestiontwo.place_name.toLowerCase();
-                      console.log('slower', sLower);
-                      let srcCoord = null;
-                      getCoordinatestwo(sLower);
-                    }}>
-                    <Text style={styles.suggestiontwo}>
-                      {suggestiontwo.place_name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-          <Text style={styles.description}>
-            Which vehicle will you take today?
-          </Text>
-          {/* {getVehicleInfo()} */}
 
-          <Text style={styles.description}>Registered Vehicles:</Text>
-          {cars.map(user => (
-            <View key={user.vehicleID}>
-              <TouchableOpacity
-                onPress={() => setVehicle({value: user.vehicleID, error: ''})}>
-                <Text>{user.Manufacturer + ' ' + user.Model}</Text>
-              </TouchableOpacity>
-              {/* <Text>{user.Manufactuer}</Text> */}
-            </View>
-          ))}
+          <View style={styles.searchContainer}>
+            <Header>Where are you travelling to?</Header>
+            <GooglePlacesAutocomplete
+              GooglePlacesDetailsQuery={{fields: 'geometry'}}
+              fetchDetails={true}
+              placeholder="From"
+              onPress={handleFromLocationSelect}
+              query={{
+                key: GOOGLE_MAPS_API_KEY,
+                language: 'en',
+                components: 'country:pk',
+                location: '24.8607,67.0011',
+                radius: '35000',
+                strictbounds: true,
+              }}
+              styles={googlePlacesStyles}
+              textInputProps={{
+                onChangeText: setFromLocation,
+                value: fromLocation,
+              }}
+            />
+            <GooglePlacesAutocomplete
+              GooglePlacesDetailsQuery={{fields: 'geometry'}}
+              fetchDetails={true}
+              placeholder="To"
+              onPress={handleToLocationSelect}
+              query={{
+                key: GOOGLE_MAPS_API_KEY,
+                language: 'en',
+                components: 'country:pk',
+                location: '24.8607,67.0011',
+                radius: '35000',
+                strictbounds: true,
+              }}
+              styles={googlePlacesStyles}
+              textInputProps={{
+                onChangeText: setToLocation,
+                value: toLocation,
+              }}
+            />
+            <Text style={styles.description}>
+              Which vehicle will you take today?
+            </Text>
+            {/* {getVehicleInfo()} */}
 
-          <Text style={styles.description}>Choose your fare:</Text>
-          <FareButton onPress={incrementCount}>+</FareButton>
-          <Text>{count}</Text>
-          <FareButton onPress={decrementCount}>-</FareButton>
-          <TextInput
-            label="Number of maximum passengers"
-            returnKeyType="done"
-            value={seats.value}
-            onChangeText={text => setSeats({value: text, error: ''})}
-            error={!!seats.error}
-            errorText={seats.error}
-          />
-          <Button mode="contained" onPress={onLoginPressed}>
+            <Text style={styles.description}>Registered Vehicles:</Text>
+            {cars.map(user => (
+              <View key={user.vehicleID}>
+                <TouchableOpacity
+                  onPress={() =>
+                    setVehicle({value: user.vehicleID, error: ''})
+                  }>
+                  <Text>{user.Manufacturer + ' ' + user.Model}</Text>
+                </TouchableOpacity>
+                {/* <Text>{user.Manufactuer}</Text> */}
+              </View>
+            ))}
+
+            <Text style={styles.description}>Choose your fare:</Text>
+            <FareButton onPress={incrementCount}>+</FareButton>
+            <Text>{count}</Text>
+            <FareButton onPress={decrementCount}>-</FareButton>
+            <TextInput
+              label="Number of maximum passengers"
+              returnKeyType="done"
+              value={seats.value}
+              onChangeText={text => setSeats({value: text, error: ''})}
+              error={!!seats.error}
+              errorText={seats.error}
+            />
+          </View>
+
+          {/* <Button mode="contained" onPress={onLoginPressed}>
             Save
-          </Button>
-        </ScrollView>
+          </Button> */}
+        </Background>
       )}
     </Background>
   );
@@ -627,5 +588,51 @@ const styles = StyleSheet.create({
     padding: 10,
     height: 700,
     width: 600,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  searchContainer: {
+    width: '100%',
+
+    paddingHorizontal: 10,
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+    marginTop: '15%',
+  },
+});
+
+const googlePlacesStyles = StyleSheet.create({
+  container: {
+    flex: 0,
+  },
+  textInput: {
+    fontSize: 16,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    paddingHorizontal: 16,
+  },
+  listView: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginTop: 8,
+  },
+  row: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#ddd',
   },
 });

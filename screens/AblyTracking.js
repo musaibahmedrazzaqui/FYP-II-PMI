@@ -16,7 +16,7 @@ import server from './globals';
 import {Avatar, Button, Card, Title} from 'react-native-paper';
 
 MapboxGL.setAccessToken(
-  'pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw',
+  'pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw',
 );
 const SOCKET_SERVER_URL = 'https://pmisocketserver-production.up.railway.app';
 

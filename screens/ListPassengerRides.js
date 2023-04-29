@@ -15,6 +15,7 @@ import axios from 'axios';
 import server from './globals';
 import DirectionsDisplay from '../components/DirectionsDisplay';
 import Header from '../components/Header';
+import Button from '../components/Button';
 
 const styles = StyleSheet.create({
   container: {
@@ -327,6 +328,13 @@ const ListPassengerRides = ({navigation, route}) => {
         <>
           {/* <Text>No data</Text> */}
           <Header>No requests</Header>
+          <Button
+            mode="contained"
+            onPress={() => {
+              navigation.replace('NewHome');
+            }}>
+            Go to Home
+          </Button>
         </>
       )}
     </Background>

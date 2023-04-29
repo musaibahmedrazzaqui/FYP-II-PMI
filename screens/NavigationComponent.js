@@ -21,7 +21,7 @@ const Navigation = props => {
     const watchId = Geolocation.watchPosition(
       position => {
         const {longitude, latitude} = position.coords;
-
+        console.log('POSIITON', position.coords);
         // Send location data to the server via HTTP POST request
         axios.post(DRIVER_API_URL, {longitude, latitude});
 
@@ -56,7 +56,7 @@ const Navigation = props => {
         {/* {console.log(origin)} */}
         <MapboxNavigation
           showsEndOfRouteFeedback={true}
-          shouldSimulateRoute={true}
+          shouldSimulateRoute={false}
           origin={origin}
           destination={destination}
           showsEndOfRouteFeedback={false}

@@ -8,7 +8,7 @@ import centroid from '@turf/centroid';
 import LocationButton from '../components/LocationButton';
 import {useNavigation} from '@react-navigation/native';
 MapboxGL.setAccessToken(
-  'pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw',
+  'pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw',
 );
 const DirectionsMap = ({loc1, loc2, start, end, uid, pass}) => {
   const [routeGeoJSON, setRouteGeoJSON] = useState(null);
@@ -16,7 +16,7 @@ const DirectionsMap = ({loc1, loc2, start, end, uid, pass}) => {
   useEffect(() => {
     const fetchDirections = async () => {
       const accessToken =
-        'pk.eyJ1IjoiZmFpemFubXVraHRhcjEiLCJhIjoiY2xjZW5obmpqMzY5ZTN3dDg3NGtpcGZrciJ9.OOU211_NDTEI4g0IL0_Izw';
+        'pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
       const requestUrl = `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start};${end}?geometries=geojson&access_token=${accessToken}`;
       console.log(requestUrl);
       try {
