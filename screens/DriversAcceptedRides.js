@@ -102,6 +102,7 @@ const DriversAcceptedRides = ({navigation, route}) => {
         {console.log('rides', rides)}
         {/* {rides[0] ? ():()} */}
         {rides.map((ride, index) => {
+          console.log(ride);
           return (
             <View
               style={[

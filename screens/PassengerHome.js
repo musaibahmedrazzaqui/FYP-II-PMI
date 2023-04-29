@@ -43,10 +43,7 @@ const PassengerHome = ({navigation, route}) => {
       await AsyncStorage.removeItem('userdata');
 
       console.log(`Item ${key} has been removed from AsyncStorage.`);
-      Navigation.reset({
-        index: 0,
-        routes: [{name: 'StartScreen'}],
-      });
+      navigation.replace('StartScreen');
     } catch (error) {
       console.log(`Error removing item ${key} from AsyncStorage: ${error}`);
     }
@@ -100,7 +97,7 @@ const PassengerHome = ({navigation, route}) => {
   return (
     <View>
       <View style={[styles.logoContainer]}>
-      <TouchableOpacity
+        <TouchableOpacity
           onPress={toggleSidebar}
           style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image
@@ -108,7 +105,6 @@ const PassengerHome = ({navigation, route}) => {
             source={require('../assets/sidebar.jpg')}
           />
         </TouchableOpacity>
-        
 
         <Text
           style={{

@@ -279,14 +279,7 @@ export default function FareNegotiation({navigation, route}) {
                   })
                   .then(() => {
                     alert('Request Sent to the driver!');
-                    navigation.navigate({
-                      name: 'YourRidesScreen',
-                      params: {
-                        rides: route.params.rides,
-                        userFare: count,
-                        userID: route.params.userid,
-                      },
-                    });
+                    navigation.replace('NewHome');
                   })
                   .catch(function (error) {
                     console.log(error);

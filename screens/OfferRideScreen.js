@@ -22,6 +22,7 @@ import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
 import server from './globals';
 import axios from 'axios';
+import {Picker} from '@react-native-picker/picker';
 // import { Dropdown } from "react-native-material-dropdown";
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyAhpqm1hIWBkVzKvf7uyqCmYNRxwQwbZzo';
@@ -29,24 +30,14 @@ export default function OfferRideScreen({navigation, route}) {
   const [from, setFrom] = useState('true');
   const [did, setdId] = useState(0);
   const [to, setTo] = useState({value: '', error: ''});
-  const [seats, setSeats] = useState({value: '', error: ''});
+  const [seatingCapacity, setSeatingCapacity] = useState(1);
+  const [seats, setSeats] = useState({value: 'null', error: ''});
   const [fare, setFare] = useState({value: 100, error: ''});
   const [count, setCount] = useState(100);
-  const [vehicle, setVehicle] = useState({value: '', error: ''});
+  const [vehicle, setVehicle] = useState({value: 0, error: ''});
   const [selected, setSelected] = React.useState('');
   const [uid, setUid] = useState(route.params?.userid);
   const [cars, setCars] = useState([]);
-  const [places, setPlaces] = useState('');
-  const [fromlatitude, setfLatitude] = useState(0.0);
-
-  const [fromlongitude, setfLongitude] = useState(0.0);
-  const [tolatitude, settLatitude] = useState(0.0);
-  const [tolongitude, settLongitude] = useState(0.0);
-  const [textTwo, setValue] = useState('');
-  const [textThree, setValuetwo] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-
-  const [suggestionstwo, setSuggestionsTwo] = useState([]);
 
   const [fromLocation, setFromLocation] = useState('');
   const [toLocation, setToLocation] = useState('');
@@ -75,23 +66,40 @@ export default function OfferRideScreen({navigation, route}) {
       setCars(response.data);
       //  setdId(response.data[0].DriverID);
     });
-    console.log('FROM' + fromlatitude + '   ' + fromlongitude);
-
-    console.log('TO' + tolatitude + '   ' + tolongitude);
     // console.log(route.params?.userid);
   }, []);
-  useEffect(() => {
-    if (
-      fromLatitude !== 0 &&
-      fromLongitude !== 0 &&
-      toLatitude !== 0 &&
-      toLongitude !== 0
-    ) {
-      setShouldRenderComponent(true);
-    } else {
-      setShouldRenderComponent(false);
-    }
-  }, [fromLatitude, fromLongitude, toLatitude, toLongitude]);
+  // useEffect(() => {
+  //   console.log(
+  //     fromLatitude,
+  //     fromLongitude,
+  //     toLatitude,
+  //     toLongitude,
+  //     fare.value,
+  //     seatingCapacity,
+  //     vehicle.value,
+  //   );
+  //   if (
+  //     fromLatitude !== 0 &&
+  //     fromLongitude !== 0 &&
+  //     toLatitude !== 0 &&
+  //     toLongitude !== 0 &&
+  //     count !== 100 &&
+  //     seatingCapacity !== 1 &&
+  //     vehicle.value !== 0
+  //   ) {
+  //     setShouldRenderComponent(true);
+  //   } else {
+  //     setShouldRenderComponent(false);
+  //   }
+  // }, [
+  //   fromLatitude,
+  //   fromLongitude,
+  //   toLatitude,
+  //   toLongitude,
+  //   fare.value,
+  //   seatingCapacity,
+  //   vehicle.value,
+  // ]);
   const handleFromLocationSelect = (data, details = null) => {
     const {description, geometry} = details;
     console.log(data.description);
@@ -114,66 +122,17 @@ export default function OfferRideScreen({navigation, route}) {
   };
   const incrementCount = () => {
     // Update state with incremented value
-    setCount(count + 50);
+    setCount(count + 10);
   };
   const decrementCount = () => {
-    setCount(count - 50);
+    setCount(count - 10);
   };
-  const getPlaceName = async (latitude, longitude) => {
-    // code to get coordinates by making API calls to mapbox endpoint
-
-    // const req =
-    //   'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-    //   longitude +
-    //   ',' +
-    //   latitude +
-    //   '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
-    const req =
-      'https://nominatim.openstreetmap.org/reverse?lat=' +
-      latitude +
-      '&lon=' +
-      longitude +
-      '&format=json';
-
-    // console.log('req', req);
-
-    let coord = null;
-    let res = null;
-
-    // axios.get
-    try {
-      // console.log('before axiosos');
-      console.log('REQ', req);
-      axios.get(req).then(res => {
-        console.log(res);
-        const place = res.data;
-        setValue(
-          place.display_name.toString().split(' ').slice(0, 9).join(' '),
-        );
-        return textTwo;
-      });
-      //console.log(await res);
-    } catch (e) {
-      console.log(e); // eslint-disable-line
-    }
-
-    if (res == null) {
-      return;
-    }
-
-    // const place = await res.data;
-    // console.log(
-    //   'PLACE',
-    //   place.display_name.toString().split(' ').slice(0, 9).join(' '),
-    // );
-    // console.log('place', place.features[0].place_name);
-
-    // setValue(place.display_name.toString().split(' ').slice(0, 9).join(' '));
-    // return place.display_name.toString().split(' ').slice(0, 9).join(' ');
-    // setPlace(place.features[0].place_name);
-    // coord = {lat: latLng[1], lng: latLng[0]};
-    // console.log('coord', coord);
-    // console.log('places' + textTwo);
+  const incrementCountSeating = () => {
+    // Update state with incremented value
+    setSeatingCapacity(parseInt(seatingCapacity) + 1);
+  };
+  const decrementCountSeating = () => {
+    setSeatingCapacity(parseInt(seatingCapacity) - 1);
   };
 
   const onLoginPressed = () => {
@@ -191,7 +150,7 @@ export default function OfferRideScreen({navigation, route}) {
     axios
       .post(`${server}/rides/addnew`, {
         DriverID: did,
-        numberOfPeople: seats.value,
+        numberOfPeople: seatingCapacity,
         fareEntered: count,
         vehicleID: vehicle.value,
       })
@@ -213,20 +172,20 @@ export default function OfferRideScreen({navigation, route}) {
         axios
           .post(`${server}/rides/driverlocation`, {
             RideID: rid,
-            latitude: fromlatitude,
-            longitude: fromlongitude,
+            latitude: fromLatitude,
+            longitude: fromLongitude,
             driverUserId: route.params.userid,
-            location: textTwo,
+            location: fromLocation,
             driverID: did,
           })
           .then(() => {
             axios
               .post(`${server}/rides/driverlocationto`, {
                 RideID: rid,
-                to_latitude: tolatitude,
-                to_longitude: tolatitude,
+                to_latitude: toLatitude,
+                to_longitude: toLongitude,
                 to_driverUserId: route.params.userid,
-                to_location: textThree,
+                to_location: toLocation,
                 to_driverID: did,
               })
               .then(() => {})
@@ -240,13 +199,9 @@ export default function OfferRideScreen({navigation, route}) {
             alert(error);
           });
         navigation.navigate({
-          name: 'FromScreen',
+          name: 'ListPassengerRides',
           params: {
             userid: uid,
-            loc1: textTwo,
-            loc2: textThree,
-            fromcoord: [fromlongitude, fromlatitude],
-            tocoord: [tolongitude, tolatitude],
           },
         });
       })
@@ -254,170 +209,11 @@ export default function OfferRideScreen({navigation, route}) {
         console.log(error);
       });
   };
-  const handleChange = async event => {
-    const {eventCount, target, text} = event.nativeEvent;
-    var newText = event.nativeEvent.text;
-    var str = newText.toString();
-    setValue(str);
-    // console.log(str);
 
-    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw`;
-    let response;
-    try {
-      response = await fetch(endpoint);
-      const results = await response.json();
-      setSuggestions(results?.features);
-      console.log(suggestions);
-    } catch (error) {
-      console.log(error);
-    }
-    //console.log(endpoint);
-    // const results = await response.json();
-    // console.log(results);
-  };
-  const handleChangetwo = async event => {
-    const {eventCount, target, text} = event.nativeEvent;
-    var newText = event.nativeEvent.text;
-    var str = newText.toString();
-    setValuetwo(str);
-    // console.log(str);
-
-    const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${str}.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw`;
-    let response;
-    try {
-      response = await fetch(endpoint);
-      const results = await response.json();
-      setSuggestionsTwo(results?.features);
-      console.log(suggestions);
-    } catch (error) {
-      console.log(error);
-    }
-    //console.log(endpoint);
-    // const results = await response.json();
-    // console.log(results);
-  };
   // const [text, onChangeText] = useState('');
 
   //   const coordinate = [longitude, latitude];
 
-  const getCoordinates = async name => {
-    // code to get coordinates by making API calls to mapbox endpoint
-
-    const req =
-      'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-      name +
-      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
-
-    console.log('req', req);
-
-    let coord = null;
-    let res = null;
-
-    // axios.get
-    try {
-      // console.log('before axiosos');
-      res = await axios.get(req);
-      //console.log(await res);
-    } catch (e) {
-      console.log(e); // eslint-disable-line
-    }
-
-    if (res == null) {
-      return;
-    }
-
-    const place = await res.data;
-    // console.log('place', place);
-    if (!place.features.length) {
-      // check whether the coordinates are returned for the Place
-      console.log('features : ' + place.features[0].geometry);
-      return;
-    }
-
-    const latLng = place.features[0].geometry.coordinates;
-    setfLatitude(latLng[1]);
-    setfLongitude(latLng[0]);
-    // setPlace(place.features[0].place_name);
-    coord = {lat: latLng[1], lng: latLng[0]};
-    console.log('coord', coord);
-    console.log('places' + textTwo);
-    // axios
-    //   .post(`${server}/rides/driverlocation`, {
-    //     latitude: latLng[1],
-    //     longitude: latLng[0],
-    //     driverUserId: route.params.userid,
-    //     location: textTwo,
-    //     driverID: did,
-    //   })
-    //   .then(() => {
-    //     alert('Sucessfully added!');
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //     alert(error);
-    //   });
-
-    return coord;
-  };
-  const getCoordinatestwo = async name => {
-    // code to get coordinates by making API calls to mapbox endpoint
-
-    const req =
-      'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
-      name +
-      '.json?bbox=66.747436523,24.639527881,67.473907471,25.111714983&access_token=pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw';
-
-    console.log('req', req);
-
-    let coord = null;
-    let res = null;
-
-    // axios.get
-    try {
-      // console.log('before axiosos');
-      res = await axios.get(req);
-      //console.log(await res);
-    } catch (e) {
-      console.log(e); // eslint-disable-line
-    }
-
-    if (res == null) {
-      return;
-    }
-
-    const place = await res.data;
-    // console.log('place', place);
-    if (!place.features.length) {
-      // check whether the coordinates are returned for the Place
-      console.log('features : ' + place.features[0].geometry);
-      return;
-    }
-
-    const latLng = place.features[0].geometry.coordinates;
-    settLatitude(latLng[1]);
-    settLongitude(latLng[0]);
-    // setPlace(place.features[0].place_name);
-    coord = {lat: latLng[1], lng: latLng[0]};
-    console.log('coord', coord);
-    console.log('places' + textTwo);
-    // axios
-    //   .post(`${server}/rides/driverlocation`, {
-    //     latitude: latLng[1],
-    //     longitude: latLng[0],
-    //     driverUserId: route.params.userid,
-    //     location: textTwo,
-    //     driverID: did,
-    //   })
-    //   .then(() => {
-    //     alert('Sucessfully added!');
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //     alert(error);
-    //   });
-
-    return coord;
-  };
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
@@ -440,78 +236,112 @@ export default function OfferRideScreen({navigation, route}) {
         <Background>
           {/* <Logo /> */}
 
-          <View style={styles.searchContainer}>
-            <Header>Where are you travelling to?</Header>
-            <GooglePlacesAutocomplete
-              GooglePlacesDetailsQuery={{fields: 'geometry'}}
-              fetchDetails={true}
-              placeholder="From"
-              onPress={handleFromLocationSelect}
-              query={{
-                key: GOOGLE_MAPS_API_KEY,
-                language: 'en',
-                components: 'country:pk',
-                location: '24.8607,67.0011',
-                radius: '35000',
-                strictbounds: true,
-              }}
-              styles={googlePlacesStyles}
-              textInputProps={{
-                onChangeText: setFromLocation,
-                value: fromLocation,
-              }}
-            />
-            <GooglePlacesAutocomplete
-              GooglePlacesDetailsQuery={{fields: 'geometry'}}
-              fetchDetails={true}
-              placeholder="To"
-              onPress={handleToLocationSelect}
-              query={{
-                key: GOOGLE_MAPS_API_KEY,
-                language: 'en',
-                components: 'country:pk',
-                location: '24.8607,67.0011',
-                radius: '35000',
-                strictbounds: true,
-              }}
-              styles={googlePlacesStyles}
-              textInputProps={{
-                onChangeText: setToLocation,
-                value: toLocation,
-              }}
-            />
-            <Text style={styles.description}>
-              Which vehicle will you take today?
-            </Text>
-            {/* {getVehicleInfo()} */}
+          {console.log('shouldrender', shouldRenderComponent)}
+          {shouldRenderComponent ? (
+            <>
+              {console.log(shouldRenderComponent)}
+              <DirectionsDisplay
+                start={[fromLongitude, fromLatitude]}
+                end={[toLongitude, toLatitude]}
+              />
+              <Button
+                style={{marginBottom: '25%'}}
+                mode="contained"
+                onPress={onLoginPressed}>
+                Save
+              </Button>
+            </>
+          ) : (
+            <View style={styles.searchContainer}>
+              <Header>Where are you travelling to?</Header>
 
-            <Text style={styles.description}>Registered Vehicles:</Text>
-            {cars.map(user => (
-              <View key={user.vehicleID}>
-                <TouchableOpacity
-                  onPress={() =>
-                    setVehicle({value: user.vehicleID, error: ''})
-                  }>
-                  <Text>{user.Manufacturer + ' ' + user.Model}</Text>
-                </TouchableOpacity>
-                {/* <Text>{user.Manufactuer}</Text> */}
-              </View>
-            ))}
+              <GooglePlacesAutocomplete
+                GooglePlacesDetailsQuery={{fields: 'geometry'}}
+                fetchDetails={true}
+                placeholder="From"
+                onPress={handleFromLocationSelect}
+                query={{
+                  key: GOOGLE_MAPS_API_KEY,
+                  language: 'en',
+                  components: 'country:pk',
+                  location: '24.8607,67.0011',
+                  radius: '35000',
+                  strictbounds: true,
+                }}
+                styles={googlePlacesStyles}
+                textInputProps={{
+                  onChangeText: setFromLocation,
+                  value: fromLocation,
+                }}
+              />
+              <GooglePlacesAutocomplete
+                GooglePlacesDetailsQuery={{fields: 'geometry'}}
+                fetchDetails={true}
+                placeholder="To"
+                onPress={handleToLocationSelect}
+                query={{
+                  key: GOOGLE_MAPS_API_KEY,
+                  language: 'en',
+                  components: 'country:pk',
+                  location: '24.8607,67.0011',
+                  radius: '35000',
+                  strictbounds: true,
+                }}
+                styles={googlePlacesStyles}
+                textInputProps={{
+                  onChangeText: setToLocation,
+                  value: toLocation,
+                }}
+              />
+              <Text style={styles.description}>
+                Which vehicle will you take today?
+              </Text>
+              {/* {getVehicleInfo()} */}
 
-            <Text style={styles.description}>Choose your fare:</Text>
-            <FareButton onPress={incrementCount}>+</FareButton>
-            <Text>{count}</Text>
-            <FareButton onPress={decrementCount}>-</FareButton>
-            <TextInput
-              label="Number of maximum passengers"
-              returnKeyType="done"
-              value={seats.value}
-              onChangeText={text => setSeats({value: text, error: ''})}
-              error={!!seats.error}
-              errorText={seats.error}
-            />
-          </View>
+              <Text style={styles.description}>Registered Vehicles:</Text>
+              <Picker
+                selectedValue={vehicle.value}
+                onValueChange={(itemValue, itemIndex) =>
+                  setVehicle({value: itemValue, error: ''})
+                }>
+                <Picker.Item label="Select your Car" value={null} />
+                {cars.map(user => (
+                  <Picker.Item
+                    key={user.vehicleID}
+                    label={`${user.Manufacturer} ${user.Model}`}
+                    value={user.vehicleID}
+                  />
+                ))}
+              </Picker>
 
+              <Text style={styles.description}>Choose your fare:</Text>
+              {count < 1000 && (
+                <FareButton onPress={incrementCount}>+</FareButton>
+              )}
+
+              <Text>{count}</Text>
+              {count > 100 && (
+                <FareButton onPress={decrementCount}>-</FareButton>
+              )}
+              <Text style={styles.description}>Seating Capacity:</Text>
+              {seatingCapacity < 6 && (
+                <FareButton onPress={incrementCountSeating}>+</FareButton>
+              )}
+
+              <Text>{seatingCapacity}</Text>
+              {seatingCapacity > 1 && (
+                <FareButton onPress={decrementCountSeating}>-</FareButton>
+              )}
+              <Button
+                style={{marginBottom: '25%'}}
+                mode="contained"
+                onPress={() => {
+                  setShouldRenderComponent(true);
+                }}>
+                Proceed
+              </Button>
+            </View>
+          )}
           {/* <Button mode="contained" onPress={onLoginPressed}>
             Save
           </Button> */}

@@ -14,13 +14,13 @@ const data = [
   },
   {
     id: '2',
-    title: 'View Ride Details',
+    title: 'Incoming Requests',
     image: require('../assets/requests.png'),
     screen: 'ListRideRequestsScreen',
   },
   {
     id: '3',
-    title: 'View Requests',
+    title: 'Active Rides',
     image: require('../assets/requests.png'),
     screen: 'AllRidesScreen',
   },

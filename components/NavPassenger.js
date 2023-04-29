@@ -24,12 +24,6 @@ const data = [
     image: require('../assets/booking.png'),
     screen: 'AblyTracking',
   },
-  {
-    id: '4',
-    title: 'JustChecking',
-    image: require('../assets/car.png'),
-    screen: 'JustChecking',
-  },
 ];
 
 const NavPassenger = ({uid}) => {

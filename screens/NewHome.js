@@ -1,5 +1,14 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  BackHandler,
+  Alert,
+} from 'react-native';
+
+// import {Text, View, StyleSheet, } from 'react-native';
 import Logo from '../components/Logo';
 import Background from '../components/Background';
 
@@ -38,6 +47,27 @@ const styles = StyleSheet.create({
 });
 
 const NewHome = ({navigation, route}) => {
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'YES', onPress: () => navigation.popToTop()},
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Background>

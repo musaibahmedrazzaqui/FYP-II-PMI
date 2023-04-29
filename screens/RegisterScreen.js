@@ -27,7 +27,7 @@ import {sha256} from 'react-native-sha256';
 export default function RegisterScreen({navigation}) {
   const [firstName, setFirstName] = useState({value: '', error: ''});
 
-  const [institute, setInsitute] = useState('');
+  const [institute, setInstitute] = useState();
   const [lastName, setLastName] = useState({value: '', error: ''});
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
@@ -41,6 +41,7 @@ export default function RegisterScreen({navigation}) {
   // let hashed = '';
   const phoneInput = useRef(null);
   const onSignUpPressed = async () => {
+    console.log(institute);
     if (firstName.value == '') {
       alert('First Name cannot be empty.');
     } else if (
@@ -263,40 +264,42 @@ export default function RegisterScreen({navigation}) {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
+
       <Logo />
       <Header>Create Account</Header>
-      <ScrollView contentContainerStyle={styles.container}>
-        <TextInput
-          label="First Name"
-          returnKeyType="next"
-          value={firstName.value}
-          onChangeText={text => setFirstName({value: text, error: ''})}
-          error={!!firstName.error}
-          autoCapitalize="words"
-          errorText={firstName.error}
-        />
-        <TextInput
-          label="Last Name"
-          returnKeyType="next"
-          value={lastName.value}
-          onChangeText={text => setLastName({value: text, error: ''})}
-          autoCapitalize="words"
-          error={!!lastName.error}
-          errorText={lastName.error}
-        />
-        <TextInput
-          label="Gender"
-          returnKeyType="next"
-          value={gender.value}
-          onChangeText={text => setGender({value: text, error: ''})}
-          autoCapitalize="words"
-          error={!!lastName.error}
-          errorText={lastName.error}
-        />
-        {console.log(gender.value.toUpperCase() != 'MALE')}
+
+      <TextInput
+        label="First Name"
+        returnKeyType="next"
+        value={firstName.value}
+        onChangeText={text => setFirstName({value: text, error: ''})}
+        error={!!firstName.error}
+        autoCapitalize="words"
+        errorText={firstName.error}
+      />
+      <TextInput
+        label="Last Name"
+        returnKeyType="next"
+        value={lastName.value}
+        onChangeText={text => setLastName({value: text, error: ''})}
+        autoCapitalize="words"
+        error={!!lastName.error}
+        errorText={lastName.error}
+      />
+      <TextInput
+        label="Gender"
+        returnKeyType="next"
+        value={gender.value}
+        onChangeText={text => setGender({value: text, error: ''})}
+        autoCapitalize="words"
+        error={!!lastName.error}
+        errorText={lastName.error}
+      />
+      {console.log(gender.value.toUpperCase() != 'MALE')}
+      <View style={{width: 300}}>
         <Picker
           selectedValue={institute}
-          onValueChange={(itemValue, itemIndex) => setInsitute(itemValue)}>
+          onValueChange={(itemValue, itemIndex) => setInstitute(itemValue)}>
           <Picker.Item label="Select your Institute" value={null} />
           {InstituteData.map(institute => (
             <Picker.Item
@@ -307,53 +310,52 @@ export default function RegisterScreen({navigation}) {
           ))}
           <Picker.Item label="Other" value={0} />
         </Picker>
+      </View>
+      <TextInput
+        label="Email"
+        returnKeyType="next"
+        value={email.value}
+        onChangeText={text => setEmail({value: text, error: ''})}
+        error={!!email.error}
+        errorText={email.error}
+        autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+      />
+      <TextInput
+        label="Password"
+        returnKeyType="next"
+        value={password.value}
+        onChangeText={text => (
+          setPassword({value: text, error: ''}),
+          sha256(text).then(hash => {
+            setHashed({value: hash, error: ''});
+          })
+        )}
+        autoCapitalize="none"
+        error={!!password.error}
+        errorText={password.error}
+        secureTextEntry
+      />
+      <PhoneInput
+        ref={phoneInput}
+        defaultValue={phonenumber}
+        defaultCode="PK"
+        layout="first"
+        onChangeText={text => {
+          setPhonenumber(text);
+        }}
+        onChangeFormattedText={text => {
+          setFormattedPhonenumber({value: text, error: ''});
+        }}
+      />
 
-        <TextInput
-          label="Email"
-          returnKeyType="next"
-          value={email.value}
-          onChangeText={text => setEmail({value: text, error: ''})}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
-        <TextInput
-          label="Password"
-          returnKeyType="next"
-          value={password.value}
-          onChangeText={text => (
-            setPassword({value: text, error: ''}),
-            sha256(text).then(hash => {
-              setHashed({value: hash, error: ''});
-            })
-          )}
-          autoCapitalize="none"
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
-        <PhoneInput
-          ref={phoneInput}
-          defaultValue={phonenumber}
-          defaultCode="PK"
-          layout="first"
-          onChangeText={text => {
-            setPhonenumber(text);
-          }}
-          onChangeFormattedText={text => {
-            setFormattedPhonenumber({value: text, error: ''});
-          }}
-        />
-      </ScrollView>
-      <Button
-        mode="contained"
-        onPress={onSignUpPressed}
-        style={{marginTop: 24}}>
+      {/* {console.log(institute)} */}
+      <Button mode="contained" onPress={onSignUpPressed} style={{marginTop: 0}}>
         Sign Up
       </Button>
+
       <View style={styles.row}>
         <Text>Already have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
@@ -376,6 +378,7 @@ const styles = StyleSheet.create({
   },
   container: {
     // padding: 20,
+    height: '90%',
     width: 300,
     // alignSelf: 'center',
     // alignItems: 'center',
