@@ -56,7 +56,7 @@ const Navigation = props => {
         {/* {console.log(origin)} */}
         <MapboxNavigation
           showsEndOfRouteFeedback={true}
-          shouldSimulateRoute={false}
+          shouldSimulateRoute={true}
           origin={origin}
           destination={destination}
           showsEndOfRouteFeedback={false}

@@ -27,7 +27,7 @@ import {sha256} from 'react-native-sha256';
 export default function RegisterScreen({navigation}) {
   const [firstName, setFirstName] = useState({value: '', error: ''});
 
-  const [institute, setInstitute] = useState();
+  const [institute, setInstitute] = useState('');
   const [lastName, setLastName] = useState({value: '', error: ''});
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
@@ -39,6 +39,12 @@ export default function RegisterScreen({navigation}) {
   const [phonenumber, setPhonenumber] = useState('');
   const [hashed, setHashed] = useState({value: '', error: ''});
   // let hashed = '';
+  const [selectedGender, setSelectedGender] = useState('Select Gender');
+
+  const handleGenderChange = gender => {
+    setSelectedGender(gender);
+    setGender({value: gender, error: ''});
+  };
   const phoneInput = useRef(null);
   const onSignUpPressed = async () => {
     console.log(institute);
@@ -56,20 +62,21 @@ export default function RegisterScreen({navigation}) {
       /\d+/g.test(lastName.value)
     ) {
       alert('Last Name cannot have any numbers or special characters.');
-    } else if (gender.value == '') {
-      alert('Gender cannot be empty.');
-    } else if (/^(male|female)$/g.test(gender.value)) {
-      alert('Gender should be Male or Female.');
     } else if (email.value == '') {
       alert('Email cannot be empty.');
     } else if (hashed.value == '') {
       alert('Password cannot be empty.');
     } else if (formattedphonenumber.value == '') {
       alert('Phone number cannot be empty.');
+    } else if (institute == '') {
+      alert('Please select institute!');
+    } else if (gender.value == '') {
+      alert('Please select gender!');
     } else {
       //Encode SHA256
 
       console.log(hashed.value);
+      console.log(institute);
       axios
         .post(`${server}/users/register`, {
           firstName: firstName.value,
@@ -286,16 +293,16 @@ export default function RegisterScreen({navigation}) {
         error={!!lastName.error}
         errorText={lastName.error}
       />
-      <TextInput
-        label="Gender"
-        returnKeyType="next"
-        value={gender.value}
-        onChangeText={text => setGender({value: text, error: ''})}
-        autoCapitalize="words"
-        error={!!lastName.error}
-        errorText={lastName.error}
-      />
-      {console.log(gender.value.toUpperCase() != 'MALE')}
+      <View style={{width: 300}}>
+        <Picker
+          selectedValue={selectedGender}
+          onValueChange={handleGenderChange}>
+          <Picker.Item label="Select Gender" value="null" />
+          <Picker.Item label="Male" value="male" />
+          <Picker.Item label="Female" value="female" />
+        </Picker>
+      </View>
+      {console.log(gender.value)}
       <View style={{width: 300}}>
         <Picker
           selectedValue={institute}
