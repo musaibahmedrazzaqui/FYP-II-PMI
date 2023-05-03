@@ -49,6 +49,21 @@ const PassengerHome = ({navigation, route}) => {
     }
   }
   useEffect(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        console.log('positionnnnnnnn', position);
+        setlatitude(latitude);
+        setlongitude(longitude);
+
+        // fetchData();
+        // do something with latitude and longitude
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 2000, maximumAge: 1000},
+    );
     fetch();
   }, []);
 
@@ -124,7 +139,13 @@ const PassengerHome = ({navigation, route}) => {
           />
         </TouchableOpacity>
       </View>
-      {showdata && <NavPassenger uid={showdata} />}
+      {showdata && (
+        <NavPassenger
+          uid={showdata}
+          latitude={latitude}
+          longitude={longitude}
+        />
+      )}
 
       {/* Main content of HomeScreen */}
       {/* ... */}

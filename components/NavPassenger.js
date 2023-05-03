@@ -26,7 +26,7 @@ const data = [
   },
 ];
 
-const NavPassenger = ({uid}) => {
+const NavPassenger = ({uid, latitude, longitude}) => {
   const Navigation = useNavigation();
   const [name, setName] = useState('');
   useEffect(() => {
@@ -61,6 +61,8 @@ const NavPassenger = ({uid}) => {
                 name: item.screen,
                 params: {
                   userid: uid,
+                  lat: latitude,
+                  long: longitude,
                 },
               })
             }

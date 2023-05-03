@@ -266,24 +266,28 @@ export default function FareNegotiation({navigation, route}) {
             <Button
               onPress={() => {
                 console.log('OYE CHAL KION NHI RAHA');
-                axios
-                  .post(`${server}/rides/addnegotiation`, {
-                    driverFare: route.params.rides.fareEntered,
-                    userFare: count,
-                    finalFare: 0,
-                    rideID: route.params.rides.RideID,
-                    userLatitude: latitude,
-                    userLongitude: longitude,
-                    location: text,
-                    userID: route.params.userid,
-                  })
-                  .then(() => {
-                    alert('Request Sent to the driver!');
-                    navigation.replace('NewHome');
-                  })
-                  .catch(function (error) {
-                    console.log(error);
-                  });
+                if (latitude && longitude && text != '') {
+                  axios
+                    .post(`${server}/rides/addnegotiation`, {
+                      driverFare: route.params.rides.fareEntered,
+                      userFare: count,
+                      finalFare: 0,
+                      rideID: route.params.rides.RideID,
+                      userLatitude: latitude,
+                      userLongitude: longitude,
+                      location: text,
+                      userID: route.params.userid,
+                    })
+                    .then(() => {
+                      alert('Request Sent to the driver!');
+                      navigation.replace('NewHome');
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                    });
+                } else {
+                  alert('Enter a location!');
+                }
               }}>
               Send request
             </Button>

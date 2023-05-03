@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import {Text} from 'react-native-paper';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
@@ -27,6 +28,11 @@ import {Picker} from '@react-native-picker/picker';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyAhpqm1hIWBkVzKvf7uyqCmYNRxwQwbZzo';
 export default function OfferRideScreen({navigation, route}) {
+  // const now = new Date();
+  // const timezoneOffset = 5 * 60 * 60 * 1000; // 5 hours ahead of UTC
+  // const karachiTime = new Date(now.getTime() + timezoneOffset).toISOString();
+  // console.log('karachitime', karachiTime);
+
   const [from, setFrom] = useState('true');
   const [did, setdId] = useState(0);
   const [to, setTo] = useState({value: '', error: ''});
@@ -46,6 +52,8 @@ export default function OfferRideScreen({navigation, route}) {
   const [toLatitude, setToLatitude] = useState(0);
   const [toLongitude, setToLongitude] = useState(0);
   const [shouldRenderComponent, setShouldRenderComponent] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
   // const {navigate} = this.props.navigation;
 
   useEffect(() => {
@@ -68,38 +76,6 @@ export default function OfferRideScreen({navigation, route}) {
     });
     // console.log(route.params?.userid);
   }, []);
-  // useEffect(() => {
-  //   console.log(
-  //     fromLatitude,
-  //     fromLongitude,
-  //     toLatitude,
-  //     toLongitude,
-  //     fare.value,
-  //     seatingCapacity,
-  //     vehicle.value,
-  //   );
-  //   if (
-  //     fromLatitude !== 0 &&
-  //     fromLongitude !== 0 &&
-  //     toLatitude !== 0 &&
-  //     toLongitude !== 0 &&
-  //     count !== 100 &&
-  //     seatingCapacity !== 1 &&
-  //     vehicle.value !== 0
-  //   ) {
-  //     setShouldRenderComponent(true);
-  //   } else {
-  //     setShouldRenderComponent(false);
-  //   }
-  // }, [
-  //   fromLatitude,
-  //   fromLongitude,
-  //   toLatitude,
-  //   toLongitude,
-  //   fare.value,
-  //   seatingCapacity,
-  //   vehicle.value,
-  // ]);
   const handleFromLocationSelect = (data, details = null) => {
     const {description, geometry} = details;
     console.log(data.description);
@@ -147,12 +123,17 @@ export default function OfferRideScreen({navigation, route}) {
       setSeats({...seats, error: fieldError2});
       return;
     }
+    // const now = new Date();
+    const timezoneOffset = 5 * 60 * 60 * 1000; //  5 hours ahead of UTC
+    const karachiTime = new Date(date.getTime() + timezoneOffset).toISOString();
+    console.log('karachitime', karachiTime);
     axios
       .post(`${server}/rides/addnew`, {
         DriverID: did,
         numberOfPeople: seatingCapacity,
         fareEntered: count,
         vehicleID: vehicle.value,
+        datetime: karachiTime,
       })
       .then(res => {
         alert('Sucessfully posted!');
@@ -315,28 +296,66 @@ export default function OfferRideScreen({navigation, route}) {
               </Picker>
 
               <Text style={styles.description}>Choose your fare:</Text>
-              {count < 1000 && (
-                <FareButton onPress={incrementCount}>+</FareButton>
-              )}
+              <View style={{flexDirection: 'row'}}>
+                {count < 1000 && (
+                  <FareButton onPress={incrementCount}>+</FareButton>
+                )}
 
-              <Text>{count}</Text>
-              {count > 100 && (
-                <FareButton onPress={decrementCount}>-</FareButton>
-              )}
+                <Text style={{marginTop: '5%', fontSize: 20}}>{count}</Text>
+                {count > 100 && (
+                  <FareButton onPress={decrementCount}>-</FareButton>
+                )}
+              </View>
               <Text style={styles.description}>Seating Capacity:</Text>
-              {seatingCapacity < 6 && (
-                <FareButton onPress={incrementCountSeating}>+</FareButton>
-              )}
+              <View style={{flexDirection: 'row'}}>
+                {seatingCapacity < 6 && (
+                  <FareButton onPress={incrementCountSeating}>+</FareButton>
+                )}
 
-              <Text>{seatingCapacity}</Text>
-              {seatingCapacity > 1 && (
-                <FareButton onPress={decrementCountSeating}>-</FareButton>
-              )}
+                <Text style={{marginTop: '5%', fontSize: 20}}>
+                  {seatingCapacity}
+                </Text>
+                {seatingCapacity > 1 && (
+                  <FareButton onPress={decrementCountSeating}>-</FareButton>
+                )}
+              </View>
+              <Text style={styles.description}>When will you leave?</Text>
+              <Button style={{height: 50}} onPress={() => setOpen(true)}>
+                Choose Date Time
+              </Button>
+              <DatePicker
+                modal
+                open={open}
+                style={{height: 80}}
+                date={date}
+                onConfirm={newdate => {
+                  setOpen(false);
+                  console.log(newdate);
+                  setDate(newdate);
+                }}
+                onCancel={() => {
+                  setOpen(false);
+                }}
+                minimumDate={new Date()}
+                maximumDate={new Date('2023-05-31')}
+              />
+              {/* <Text>{date.setHours(date.getHours() - 7)}</Text> */}
+              {console.log('HIIIIIIIIIIII', date)}
               <Button
-                style={{marginBottom: '25%'}}
+                style={{marginBottom: '35%'}}
                 mode="contained"
                 onPress={() => {
-                  setShouldRenderComponent(true);
+                  if (
+                    date &&
+                    fromLatitude != 0 &&
+                    fromLongitude != 0 &&
+                    toLatitude != 0 &&
+                    toLongitude != null
+                  ) {
+                    setShouldRenderComponent(true);
+                  } else {
+                    alert('Enter details first!');
+                  }
                 }}>
                 Proceed
               </Button>

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   RefreshControl,
+  PermissionsAndroid,
 } from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
@@ -17,34 +18,69 @@ import server from './globals';
 import axios from 'axios';
 import PickupDestination from '../components/PickupDestination2';
 // import FareNegotiation from './FareNegotiation';
-const getRidedata = response => {
-  console.log('hereeee', response);
-  let rData = response;
-  // console.log('Car data', carData);
-  const keys = Object.keys(rData);
-  console.log('Keys', keys);
-  return keys.map(key => {
-    let rideData = rData[key];
-    // console.log(caData);
-    return {key: key, ...rideData};
-  });
-};
+
 const AvailableRidesScreen = ({navigation, route}) => {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const [rides, setRides] = useState([]);
+  const [months, setMonths] = useState(monthNames);
+  const [sortedrides, setsortedrides] = useState([]);
   const [show, setShow] = useState(false);
+  const [isSorted, setIsSorted] = useState(false);
   const [uid, setUid] = useState(route.params?.userid);
   const [did, setdId] = useState();
-  const [latitude, setlatitude] = React.useState('0.0');
-  const [longitude, setlongitude] = React.useState('0.0');
+  const [latitude, setlatitude] = React.useState(route.params?.lat);
+  const [longitude, setlongitude] = React.useState(route.params?.long);
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295; // Math.PI / 180
+    var c = Math.cos;
+    var a =
+      0.5 -
+      c((lat2 - lat1) * p) / 2 +
+      (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
+    const distance = 12742 * Math.asin(Math.sqrt(a));
+    console.log('Distance: ', distance);
+    return distance;
+  }
+
+  const getRidedata = response => {
+    // console.log('hereeee', response);
+    let rData = response;
+
+    // console.log('Car data', carData);
+    const keys = Object.keys(rData);
+    console.log('Keys', keys);
+    return keys.map(key => {
+      let rideData = rData[key];
+      console.log('SSSSSSSSSSSSS', rideData.datetime);
+      const dateform = new Date(rideData.datetime);
+      rideData.datetime = dateform;
+      //  console.log(caData);
+      return {key: key, ...rideData};
+    });
+  };
   const fetchData = async () => {
-    axios
+    await axios
       .get(`${server}/rides/getrides/${route.params?.userid}`)
       .then(res => {
-        console.log('DID ');
+        // console.log('DID ');
         const response = res.data;
         if (response.error == 0) {
           console.log(res.data.length);
           setRides(getRidedata(response.data));
+          // sortArray();
         } else {
           console.log('error');
         }
@@ -53,14 +89,43 @@ const AvailableRidesScreen = ({navigation, route}) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    Geolocation.getCurrentPosition(info => {
-      setlatitude(info.coords.latitude);
-      setlongitude(info.coords.longitude);
+  function sortArray() {
+    console.log('inside sort array', latitude, longitude);
+    const sortedArray = rides.sort((a, b) => {
+      const distanceA = calculateDistance(
+        latitude,
+        longitude,
+        a.DriverLat,
+        a.DriverLong,
+      );
+      const distanceB = calculateDistance(
+        latitude,
+        longitude,
+        b.DriverLat,
+        b.DriverLong,
+      );
+      return distanceA - distanceB;
     });
-    console.log('ssssssssss');
+    setRides(getRidedata(sortedArray));
+  }
+  useEffect(() => {
+    // requestLocationPermission();
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        console.log('positionnnnnnnn', position);
+        setlatitude(latitude);
+        setlongitude(longitude);
 
+        // do something with latitude and longitude
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 2000, maximumAge: 1000},
+    );
     fetchData();
+    // sortArray();
   }, []);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -83,8 +148,16 @@ const AvailableRidesScreen = ({navigation, route}) => {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
-      {console.log(rides)}
+      {/* {isSorted && ()} */}
+      {/* {console.log(rides)} */}
+      <Button
+        onPress={() => {
+          sortArray();
+        }}>
+        Sort by Current Location
+      </Button>
       {rides[0] ? (
+        // {new Date(item.datetime)}
         <FlatList
           data={rides}
           keyExtractor={item => item.key.toString()}
@@ -126,6 +199,32 @@ const AvailableRidesScreen = ({navigation, route}) => {
                       color: 'black',
                     }}>
                     Driver: {item.firstName} {item.lastName}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      marginLeft: 18,
+                      marginTop: 20,
+                      color: 'black',
+                    }}>
+                    Date Leaving: {item.datetime.getUTCDate()}{' '}
+                    {months[item.datetime.getUTCMonth()]}{' '}
+                    {item.datetime.getUTCFullYear()}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      marginLeft: 18,
+                      marginTop: 20,
+                      color: 'black',
+                    }}>
+                    Time Leaving: {item.datetime.getUTCHours()}:
+                    {item.datetime.getUTCMinutes().toString().padStart(2, '0')}{' '}
+                    {item.datetime.getUTCHours() < 12 ? (
+                      <Text>AM</Text>
+                    ) : (
+                      <Text>PM</Text>
+                    )}
                   </Text>
                   {/* {getLocation(rides[item.id - 1])} */}
                   <Card.Content>

@@ -83,11 +83,14 @@ const Navigation = props => {
               alert('You have reached your destination');
               console.log('Reached Destination', event.nativeEvent);
               if (props.puid !== 0) {
-                const res = await axios.get(
-                  `${server}/rides/updatestatus/${props.puid}/${props.rid}`,
-                );
+                axios
+                  .get(
+                    `${server}/rides/updatestatus/${props.puid}/${props.rid}`,
+                  )
+                  .then(res => {
+                    Navigat.reset('DriversAcceptedRides');
+                  });
                 console.log(res.data);
-                Navigat.navigate('DriversAcceptedRides');
               } else {
                 console.log('HIIIIIIIIIIIIIIIII');
               }
