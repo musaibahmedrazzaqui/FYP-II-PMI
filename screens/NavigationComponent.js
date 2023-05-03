@@ -67,7 +67,10 @@ const Navigation = props => {
               event.nativeEvent.longitude,
               event.nativeEvent.latitude,
             ]);
-            axios.post(DRIVER_API_URL, location);
+            axios.post(DRIVER_API_URL, {
+              duid: props.duid,
+              location: location,
+            });
             // console.log(location[0]);
           }}
           onRouteProgressChange={event => {

@@ -26,6 +26,7 @@ const AblyTracking = ({navigation, route}) => {
   const [latitude, setLat] = useState(0.0);
   const [longitude, setLong] = useState(0.0);
   const [check, setCheck] = useState();
+  const [driverId, setdriverid] = useState(0);
   const [driverLocation, setDriverLocation] = useState([
     67.04311014205486, 24.791446911566705,
   ]);
@@ -40,6 +41,7 @@ const AblyTracking = ({navigation, route}) => {
       setLat(info.coords.latitude);
       setLong(info.coords.longitude);
     });
+
     let url = `${server}/rides/forably/${route.params?.userid}`;
     axios.get(url).then(res => {
       console.log(url);
@@ -49,24 +51,29 @@ const AblyTracking = ({navigation, route}) => {
         // console.log('respose', response);
         console.log(res.data.data[0]);
         setData(res.data.data[0]);
+        setdriverid(res.data.data[0].DriverID);
         setCheck(5);
       } else {
-        // setCheck(false);
         alert('No active rides yet');
         console.log('error');
       }
     });
     // Connect to the server via Socket.IO
     const socket = io(SOCKET_SERVER_URL);
-    console.log(SOCKET_SERVER_URL);
+    // console.log(SOCKET_SERVER_URL);
     // Receive driver's location data from the server
-    socket.on('driverLocation', updateDriverLocation);
+    // socket.emit('join', driverId);
+    console.log(driverId);
+    socket.emit('subscribe', driverId);
+    socket.on('driverLocation', location => {
+      setDriverLocation(location);
+    });
 
     // Disconnect from the server on component unmount
     return () => {
       socket.disconnect();
     };
-  }, [updateDriverLocation]);
+  }, []);
   const handlePress = () => {
     Linking.openURL(`tel:${dataforably.phone}`);
   };
@@ -86,7 +93,7 @@ const AblyTracking = ({navigation, route}) => {
             id="currentlocation"
             title="current location"
             anchor={{x: 0.5, y: 0.5}}
-            coordinate={[longitude, latitude]}>
+            coordinate={[dataforably.PassLong, dataforably.PassLat]}>
             <MapboxGL.Callout title="Your Marker Title">
               <View>
                 <Text>Your current location</Text>

@@ -88,6 +88,7 @@ const NavigationScreen = ({navigation, route}) => {
         <NavigationComponentTwo
           puid={route.params.puid}
           rid={route.params.rid}
+          duid={route.params.duid}
           origin={[longitude, latitude]}
           destination={[passengerlongitude, passengerlatitude]}
           driver_to={[drivertolongitude, drivertolatitude]}
@@ -98,6 +99,7 @@ const NavigationScreen = ({navigation, route}) => {
       ) : route.params.bool === 0 ? (
         <NavigationComponent
           puid={route.params.puid}
+          duid={route.params.duid}
           rid={route.params.rid}
           origin={[longitude, latitude]}
           destination={[passengerlongitude, passengerlatitude]}
@@ -110,6 +112,7 @@ const NavigationScreen = ({navigation, route}) => {
         <NavigationComponent
           puid={route.params.puid}
           rid={route.params.rid}
+          duid={route.params.duid}
           origin={[longitude, latitude]}
           destination={[drivertolongitude, drivertolatitude]}
           driver_to={[drivertolongitude, drivertolatitude]}

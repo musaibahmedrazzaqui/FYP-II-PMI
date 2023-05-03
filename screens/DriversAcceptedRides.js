@@ -243,6 +243,7 @@ const DriversAcceptedRides = ({navigation, route}) => {
                               navigation.navigate({
                                 name: 'NavigationScreen',
                                 params: {
+                                  duid: route.params?.ride.DriverUserID,
                                   bool: 0,
                                   puid: ride.PassengerID,
                                   rid: ride.RideID,
@@ -320,6 +321,7 @@ const DriversAcceptedRides = ({navigation, route}) => {
             name: 'NavigationScreen',
             params: {
               puid: 0,
+              duid: route.params?.ride.DriverUserID,
               rid: rides[0].RideID,
               bool: 1,
               drivertolatitude: rides[0].DestLat,
