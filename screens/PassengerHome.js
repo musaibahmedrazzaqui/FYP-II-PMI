@@ -9,6 +9,7 @@ import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import server from './globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Background from '../components/Background';
 import {
   View,
   TouchableOpacity,

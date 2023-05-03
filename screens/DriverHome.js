@@ -1,12 +1,12 @@
 // import {View, Text, StyleSheet} from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import PickupDestination from '../components/PickupDestination3';
 import tw from 'twrnc';
-import {Icon} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import SecondNavOptions from '../components/SecondNavOptions';
 import Pickup from '../components/PickupDestination2';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import Geolocation from '@react-native-community/geolocation';
 import IncomingRide from '../components/IncomingRide';
 import NavPassenger from '../components/NavPassenger';
@@ -23,15 +23,17 @@ import {
   Modal,
   ActivityIndicator,
   ScrollView,
+  Dimensions,
   RefreshControl,
 } from 'react-native';
 
 // import Sidebar from './Sidebar';
 import Navbar from '../components/NavBar';
-import {SafeAreaView} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import Header from '../components/Header';
+const {width, height} = Dimensions.get('window');
 
-const DriverHome = ({navigation, route}) => {
+const DriverHome = ({ navigation, route }) => {
   const Navigation = useNavigation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [email, setEmail] = useState();
@@ -101,7 +103,7 @@ const DriverHome = ({navigation, route}) => {
                   },
                 },
               ],
-              {cancelable: false},
+              { cancelable: false },
             );
           }
         }
@@ -304,7 +306,7 @@ const DriverHome = ({navigation, route}) => {
   };
   return (
     <ScrollView
-      contentContainerStyle={{flexGrow: 1}}
+      contentContainerStyle={{ flexGrow: 1 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }>
@@ -312,31 +314,33 @@ const DriverHome = ({navigation, route}) => {
         {/* <Text style={[{color: 'darkblue'}, tw`text-2xl font-bold ml-33 mt-2`]}>
           Pool Me In
         </Text> */}
-        <View
+        
+          <Text style={{
+            color: 'darkblue',
+            fontSize: 25,
+            fontWeight: 'bold',
+            marginLeft: 'auto',
+            marginRight: '15.7%'
+          }}>Pool Me In</Text>
+       
+        <TouchableOpacity
+          // style={tw` w-9`}
+          
+          onPress={() => {
+            loggedout();
+          }}>
+             <View
           style={{
             flex: 1,
             marginLeft: 30,
-            alignSelf: 'center',
-            alignItems: 'center',
+            
+            
             justifyContent: 'center',
-          }}>
-          <Header>Pool Me In</Header>
-        </View>
-        <TouchableOpacity
-          // style={tw` w-9`}
-          style={{
-            alignItems: 'flex-end',
-            marginRight: 10,
-            marginTop: 12,
-            height: 25,
-            width: 25,
-          }}
-          onPress={() => {
-            loggedout();
           }}>
           <Image
             style={styles.image}
             source={require('../assets/logouticon.png')}></Image>
+            </View>
         </TouchableOpacity>
         {/* <Icon
           name="logout"
@@ -398,7 +402,7 @@ const DriverHome = ({navigation, route}) => {
                 {passridedata[0]?.lastName}
               </Text>
               <Text
-                style={{fontSize: 22, fontWeight: 'bold', marginBottom: 10}}>
+                style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 10 }}>
                 Fare: {passridedata[0]?.fare}
               </Text>
               <Pickup
@@ -449,7 +453,7 @@ const DriverHome = ({navigation, route}) => {
                   createnew(passridedata);
                 }}
                 style={styles.buttonblue}>
-                <Text style={{color: 'black', fontSize: 20}}>
+                <Text style={{ color: 'black', fontSize: 20 }}>
                   Create New Ride
                 </Text>
               </TouchableOpacity>
@@ -519,7 +523,7 @@ const styles = StyleSheet.create({
   toggleButton: {
     position: 'absolute',
     top: 18,
-    right: 350,
+    right: 340,
     padding: 8,
     backgroundColor: 'transparent',
     borderRadius: 8,
@@ -535,19 +539,14 @@ const styles = StyleSheet.create({
   },
   toggleButtonTwo: {
     position: 'absolute',
-    top: 18,
-    right: 100,
-    padding: 8,
-    backgroundColor: 'transparent',
-    borderRadius: 8,
+    marginLeft: '70%',
+    alignSelf: 'flex-start',
   },
   logoContainer: {
-    display: 'flex',
-    flex: 0,
-    marginTop: 15,
-    marginRight: 20,
     flexDirection: 'row',
-    // alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: height * 0.03,
+    paddingHorizontal: width * 0.06,
   },
 });

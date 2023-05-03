@@ -39,7 +39,7 @@ export default function RegisterScreen({navigation}) {
   const [phonenumber, setPhonenumber] = useState('');
   const [hashed, setHashed] = useState({value: '', error: ''});
   // let hashed = '';
-  const [selectedGender, setSelectedGender] = useState('Select Gender');
+  const [selectedGender, setSelectedGender] = useState('male');
 
   const handleGenderChange = gender => {
     setSelectedGender(gender);
@@ -297,7 +297,7 @@ export default function RegisterScreen({navigation}) {
         <Picker
           selectedValue={selectedGender}
           onValueChange={handleGenderChange}>
-          <Picker.Item label="Select Gender" value="null" />
+          <Picker.Item label="Select Gender" value="" />
           <Picker.Item label="Male" value="male" />
           <Picker.Item label="Female" value="female" />
         </Picker>
