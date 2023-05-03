@@ -1,12 +1,12 @@
 // import {View, Text, StyleSheet} from 'react-native';
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useRef, useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import PickupDestination from '../components/PickupDestination3';
 import tw from 'twrnc';
-import { Icon } from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import SecondNavOptions from '../components/SecondNavOptions';
 import Pickup from '../components/PickupDestination2';
-import { Picker } from '@react-native-picker/picker';
+import {Picker} from '@react-native-picker/picker';
 import Geolocation from '@react-native-community/geolocation';
 import IncomingRide from '../components/IncomingRide';
 import NavPassenger from '../components/NavPassenger';
@@ -29,14 +29,15 @@ import {
 
 // import Sidebar from './Sidebar';
 import Navbar from '../components/NavBar';
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView} from 'react-native';
 import Header from '../components/Header';
 const {width, height} = Dimensions.get('window');
 
-const DriverHome = ({ navigation, route }) => {
+const DriverHome = ({navigation, route}) => {
   const Navigation = useNavigation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [email, setEmail] = useState();
+  const [ismainload, setismainlaod] = useState(true);
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
   const [check, setCheck] = useState(false);
@@ -66,6 +67,7 @@ const DriverHome = ({ navigation, route }) => {
     let url = `${server}/driver/${showdata}`;
     console.log(url);
     let urltwo = `${server}/rides/getuniqueallwithcolumns/${showdata}`;
+    console.log(urltwo);
     axios
       .get(urltwo)
       .then(res => {
@@ -103,7 +105,7 @@ const DriverHome = ({ navigation, route }) => {
                   },
                 },
               ],
-              { cancelable: false },
+              {cancelable: false},
             );
           }
         }
@@ -128,13 +130,16 @@ const DriverHome = ({ navigation, route }) => {
           const response = res.data.error;
           if (response == 0) {
             setCheckone(true);
+            setismainlaod(false);
           } else {
             setCheckone(false);
+            setismainlaod(false);
           }
         });
       } else {
         setdId(0);
         setCheck(false);
+        setismainlaod(false);
         setCheckone(false);
       }
     });
@@ -271,6 +276,7 @@ const DriverHome = ({ navigation, route }) => {
           })
           .then(() => {
             console.log('buton presed');
+            setModalVisible(false);
           })
           .catch(function (error) {
             console.log(error);
@@ -306,74 +312,61 @@ const DriverHome = ({ navigation, route }) => {
   };
   return (
     <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{flexGrow: 1}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }>
       <View style={[styles.logoContainer]}>
-        {/* <Text style={[{color: 'darkblue'}, tw`text-2xl font-bold ml-33 mt-2`]}>
-          Pool Me In
-        </Text> */}
-        
-          <Text style={{
+        <TouchableOpacity
+          onPress={toggleSidebar}
+          style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image
+            style={styles.image}
+            source={require('../assets/sidebar.jpg')}
+          />
+        </TouchableOpacity>
+
+        <Text
+          style={{
             color: 'darkblue',
             fontSize: 25,
             fontWeight: 'bold',
             marginLeft: 'auto',
-            marginRight: '15.7%'
-          }}>Pool Me In</Text>
-       
+          }}>
+          Pool Me In
+        </Text>
         <TouchableOpacity
-          // style={tw` w-9`}
-          
-          onPress={() => {
-            loggedout();
-          }}>
-             <View
-          style={{
-            flex: 1,
-            marginLeft: 30,
-            
-            
-            justifyContent: 'center',
-          }}>
+          onPress={() => loggedout()}
+          style={{marginLeft: 'auto'}}>
           <Image
             style={styles.image}
-            source={require('../assets/logouticon.png')}></Image>
-            </View>
+            source={require('../assets/logouticon.png')}
+          />
         </TouchableOpacity>
-        {/* <Icon
-          name="logout"
-          style={tw` w-9`}
-          color={'gray'}
-          type="material"
-          size={35}
-          onPress={() => loggedout()}
-        /> */}
       </View>
-      {checkone === true && <IncomingRide uid={showdata} />}
-      {check === false && <SecondNavOptions uid={showdata} />}
-      {/* Main content of HomeScreen */}
-      {/* ... */}
-
-      {/* Sidebar */}
-      {isSidebarOpen == true ? (
+      {ismainload ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
         <>
-          <Navbar isOpen={isSidebarOpen} onClose={toggleSidebar} />
+          {checkone === true && <IncomingRide uid={showdata} />}
+          {check === false && <SecondNavOptions uid={showdata} />}
+        </>
+      )}
+
+      {isSidebarOpen == true && (
+        <>
+          <Navbar
+            uid={showdata}
+            isOpen={isSidebarOpen}
+            onClose={toggleSidebar}
+          />
           <TouchableOpacity
             style={styles.toggleButtonTwo}
             onPress={toggleSidebar}>
             <Image
               style={styles.image}
-              source={require('../assets/close-window.png')}></Image>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <TouchableOpacity style={styles.toggleButton} onPress={toggleSidebar}>
-            <Image
-              style={styles.image}
-              source={require('../assets/sidebar.jpg')}></Image>
+              source={require('../assets/close-window.png')}
+            />
           </TouchableOpacity>
         </>
       )}
@@ -402,7 +395,7 @@ const DriverHome = ({ navigation, route }) => {
                 {passridedata[0]?.lastName}
               </Text>
               <Text
-                style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 10 }}>
+                style={{fontSize: 22, fontWeight: 'bold', marginBottom: 10}}>
                 Fare: {passridedata[0]?.fare}
               </Text>
               <Pickup
@@ -453,7 +446,7 @@ const DriverHome = ({ navigation, route }) => {
                   createnew(passridedata);
                 }}
                 style={styles.buttonblue}>
-                <Text style={{ color: 'black', fontSize: 20 }}>
+                <Text style={{color: 'black', fontSize: 20}}>
                   Create New Ride
                 </Text>
               </TouchableOpacity>
@@ -477,8 +470,9 @@ const styles = StyleSheet.create({
     // Other styles for the main container of HomeScreen
   },
   image: {
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
   },
   imageLogout: {
     width: 2,

@@ -18,6 +18,7 @@ import Header from '../components/Header';
 // import Button from '../components/Button';
 import Paragraph from '../components/Paragraph';
 import axios from 'axios';
+import BackButton from '../components/BackButton';
 
 export default function FareNegotiation({navigation, route}) {
   console.log(route.params.rides);
@@ -173,7 +174,7 @@ export default function FareNegotiation({navigation, route}) {
   return (
     <ScrollView>
       <Background>
-        {/* <Logo /> */}
+        <BackButton goBack={navigation.goBack} />
 
         <Text style={styles.header}>Let's Start Your Ride!</Text>
         <Paragraph>
@@ -280,7 +281,7 @@ export default function FareNegotiation({navigation, route}) {
                     })
                     .then(() => {
                       alert('Request Sent to the driver!');
-                      navigation.replace('NewHome');
+                      navigation.reset('NewHome');
                     })
                     .catch(function (error) {
                       console.log(error);

@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 // import {Button} from 'react-native-paper';
 import React, {useEffect, useState} from 'react';
+import BackButton from '../components/BackButton';
 
 export default function ReceiptScreen({navigation, route}) {
   const [rating, setRating] = useState(null);
@@ -29,6 +30,8 @@ export default function ReceiptScreen({navigation, route}) {
   };
   return (
     <Background>
+      {/* <BackButton onPress={navigation.goBack()} /> */}
+      <BackButton goBack={navigation.goBack} />
       <View style={styles.container}>
         <Text style={[styles.question, {fontWeight: 'bold', fontSize: 21}]}>
           Passenger: {route.params.ride.PassengerFName}{' '}

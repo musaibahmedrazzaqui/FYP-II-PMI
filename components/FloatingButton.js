@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, Text} from 'react-native';
 
-const FloatingButton = ({onPress, title, title2}) => (
+const FloatingButton = ({onPress, title, title2, style}) => (
   <TouchableOpacity onPress={onPress} style={styles.button}>
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.title}>{title2}</Text>

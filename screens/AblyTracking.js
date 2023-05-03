@@ -14,6 +14,7 @@ import axios from 'axios';
 import server from './globals';
 // import { Card } from 'react-native-paper';
 import {Avatar, Button, Card, Title} from 'react-native-paper';
+import BackButton from '../components/BackButton';
 
 MapboxGL.setAccessToken(
   'pk.eyJ1IjoicG9vbG1laW4iLCJhIjoiY2xndmJvMWJhMHR0MjNmbzVveG5qNTZ6cCJ9.UIciTcObMi46b9dxG6Ptnw',
@@ -43,7 +44,7 @@ const AblyTracking = ({navigation, route}) => {
     axios.get(url).then(res => {
       console.log(url);
       const response = res.data;
-      console.log(response);
+      console.log(response.data[0]);
       if (response.error == 0) {
         // console.log('respose', response);
         console.log(res.data.data[0]);
@@ -121,6 +122,7 @@ const AblyTracking = ({navigation, route}) => {
       )}
       <View>
         <Card>
+          <BackButton goBack={navigation.goBack} />
           <Text
             style={{
               fontSize: 25,
@@ -141,7 +143,9 @@ const AblyTracking = ({navigation, route}) => {
               />
             </TouchableOpacity>
 
-            <Text>Fare Decided {dataforably.fareDecided} Rupees</Text>
+            <Text style={{color: 'black', fontSize: 20, fontStyle: 'italic'}}>
+              Fare Decided: {dataforably.fareDecided} Rupees
+            </Text>
           </Card.Content>
           {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
         </Card>

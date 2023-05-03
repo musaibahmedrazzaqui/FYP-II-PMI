@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   RefreshControl,
+  ActivityIndicator,
   PermissionsAndroid,
 } from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
@@ -17,6 +18,8 @@ import RNRestart from 'react-native-restart';
 import server from './globals';
 import axios from 'axios';
 import PickupDestination from '../components/PickupDestination2';
+import FloatingButton from '../components/FloatingButton';
+import FloatingButton2 from '../components/FloatingButton2';
 // import FareNegotiation from './FareNegotiation';
 
 const AvailableRidesScreen = ({navigation, route}) => {
@@ -36,7 +39,9 @@ const AvailableRidesScreen = ({navigation, route}) => {
   ];
   const [rides, setRides] = useState([]);
   const [months, setMonths] = useState(monthNames);
+  const [gender, setgender] = useState('');
   const [sortedrides, setsortedrides] = useState([]);
+  const [isLoading, setisloading] = useState(true);
   const [show, setShow] = useState(false);
   const [isSorted, setIsSorted] = useState(false);
   const [uid, setUid] = useState(route.params?.userid);
@@ -76,6 +81,13 @@ const AvailableRidesScreen = ({navigation, route}) => {
       .get(`${server}/rides/getrides/${route.params?.userid}`)
       .then(res => {
         // console.log('DID ');
+        axios
+          .get(`${server}/rides/getName/${route.params?.userid}`)
+          .then(res => {
+            console.log('MY GENDER', res.data.data[0].gender);
+            setgender(res.data.data[0].gender);
+            setisloading(false);
+          });
         const response = res.data;
         if (response.error == 0) {
           console.log(res.data.length);
@@ -107,6 +119,12 @@ const AvailableRidesScreen = ({navigation, route}) => {
       return distanceA - distanceB;
     });
     setRides(getRidedata(sortedArray));
+  }
+  function sortbyGender() {
+    // console.log('inside sort array', latitude, longitude);
+    console.log('IM PRESSED');
+    const filteredResponse = rides.filter(item => item.gender === gender);
+    setRides(getRidedata(filteredResponse));
   }
   useEffect(() => {
     // requestLocationPermission();
@@ -150,146 +168,169 @@ const AvailableRidesScreen = ({navigation, route}) => {
       <BackButton goBack={navigation.goBack} />
       {/* {isSorted && ()} */}
       {/* {console.log(rides)} */}
-      <Button
-        onPress={() => {
-          sortArray();
-        }}>
-        Sort by Current Location
-      </Button>
-      {rides[0] ? (
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : rides[0] ? (
         // {new Date(item.datetime)}
-        <FlatList
-          data={rides}
-          keyExtractor={item => item.key.toString()}
-          renderItem={({item}) => (
-            <View style={{padding: 10}}>
-              <TouchableOpacity
-                onPress={() => {
-                  axios
-                    .get(
-                      `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
-                    )
-                    .then(res => {
-                      // console.log('DID ');
-                      const response = res.data;
-                      if (response.error == 0) {
-                        navigation.navigate({
-                          name: 'FareNegotiation',
-                          params: {
-                            rides: item,
-                            latitude: latitude,
-                            longitude: longitude,
-                            userid: uid,
-                          },
-                        });
-                        console.log(res.data.length);
-                        setRides(getRidedata(response.data));
-                      } else {
-                        console.log('error');
-                        alert(response.data);
-                      }
-                    });
-                }}>
-                <Card style={{width: 280}}>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      marginLeft: 18,
-                      marginTop: 20,
-                      color: 'black',
-                    }}>
-                    Driver: {item.firstName} {item.lastName}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      marginLeft: 18,
-                      marginTop: 20,
-                      color: 'black',
-                    }}>
-                    Date Leaving: {item.datetime.getUTCDate()}{' '}
-                    {months[item.datetime.getUTCMonth()]}{' '}
-                    {item.datetime.getUTCFullYear()}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      marginLeft: 18,
-                      marginTop: 20,
-                      color: 'black',
-                    }}>
-                    Time Leaving: {item.datetime.getUTCHours()}:
-                    {item.datetime.getUTCMinutes().toString().padStart(2, '0')}{' '}
-                    {item.datetime.getUTCHours() < 12 ? (
-                      <Text>AM</Text>
-                    ) : (
-                      <Text>PM</Text>
-                    )}
-                  </Text>
-                  {/* {getLocation(rides[item.id - 1])} */}
-                  <Card.Content>
-                    {/* <Title>Driver Currently in: {item.location}</Title>
-                    <Title>Going To {item.to_location}</Title> */}
-                    <PickupDestination
-                      loc1={item.location}
-                      loc2={item.to_location}
-                    />
-                    <Text>Fare Asked: {item.fareEntered} Rupees</Text>
-                    <Text>
-                      Car:{' '}
-                      {item.Manufacturer + ' ' + item.Model + ' ' + item.Year}
-                    </Text>
-                    <Text>
-                      Number of Seats Available: {item.numberOfPeople}
-                    </Text>
-                  </Card.Content>
-                  {/* <Card.Cover source={{uri: 'https://picsum.photos/700'}} /> */}
-                  {/* <Card.Actions>
-                    <Button
-                      onPress={() => {
-                        axios
-                          .get(
-                            `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
-                          )
-                          .then(res => {
-                            // console.log('DID ');
-                            const response = res.data;
-                            if (response.error == 0) {
-                              navigation.navigate({
-                                name: 'FareNegotiation',
-                                params: {
-                                  rides: item,
-                                  latitude: latitude,
-                                  longitude: longitude,
-                                  userid: uid,
-                                },
+        <>
+          <View style={{paddingBottom: '25%'}}>
+            <FlatList
+              data={rides}
+              keyExtractor={item => item.key.toString()}
+              renderItem={({item}) => (
+                <View style={{padding: 10}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setisloading(true);
+                      axios
+                        .get(
+                          `${server}/rides/checkforrequest/${route.params?.userid}/${item.RideID}`,
+                        )
+                        .then(res => {
+                          // console.log('DID ');
+                          const response = res.data;
+                          if (response.error == 0) {
+                            axios
+                              .get(
+                                `${server}/rides/checkpassengerifhasactive/${route.params?.userid}`,
+                              )
+                              .then(res => {
+                                setisloading(false);
+                                if (res.data.error == 0) {
+                                  navigation.navigate({
+                                    name: 'FareNegotiation',
+                                    params: {
+                                      rides: item,
+                                      latitude: latitude,
+                                      longitude: longitude,
+                                      userid: uid,
+                                    },
+                                  });
+                                  console.log(res.data.length);
+                                  setRides(getRidedata(response.data));
+                                } else if (res.data.error == 1) {
+                                  setisloading(false);
+                                  alert(res.data.data);
+                                }
                               });
-                              console.log(res.data.length);
-                              setRides(getRidedata(response.data));
-                            } else {
-                              console.log('error');
-                              alert(response.data);
-                            }
-                          });
-                      }}>
-                      Negotiate Fare
-                    </Button>
-                    <Button style={{fontSize: '12'}}>Request ride</Button>
-                  </Card.Actions> */}
-                </Card>
-              </TouchableOpacity>
-            </View>
-          )}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
+                          } else {
+                            setisloading(false);
+                            console.log('error');
+                            alert(response.data);
+                          }
+                        });
+                    }}>
+                    <Card style={{width: 280}}>
+                      <Text
+                        style={{
+                          fontSize: 25,
+                          marginLeft: 18,
+                          marginTop: 20,
+                          color: 'black',
+                        }}>
+                        Driver: {item.firstName} {item.lastName}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          marginLeft: 18,
+                          marginTop: 20,
+                          color: 'black',
+                        }}>
+                        Date Leaving: {item.datetime.getUTCDate()}{' '}
+                        {months[item.datetime.getUTCMonth()]}{' '}
+                        {item.datetime.getUTCFullYear()}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          marginLeft: 18,
+                          marginTop: 20,
+                          color: 'black',
+                        }}>
+                        Time Leaving: {item.datetime.getUTCHours()}:
+                        {item.datetime
+                          .getUTCMinutes()
+                          .toString()
+                          .padStart(2, '0')}{' '}
+                        {item.datetime.getUTCHours() < 12 ? (
+                          <Text>AM</Text>
+                        ) : (
+                          <Text>PM</Text>
+                        )}
+                      </Text>
+                      <Card.Content>
+                        <PickupDestination
+                          loc1={item.location}
+                          loc2={item.to_location}
+                        />
+                        <Text>Fare Asked: {item.fareEntered} Rupees</Text>
+                        <Text>
+                          Car:{' '}
+                          {item.Manufacturer +
+                            ' ' +
+                            item.Model +
+                            ' ' +
+                            item.Year}
+                        </Text>
+                        <Text>
+                          Number of Seats Available: {item.numberOfPeople}
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                </View>
+              )}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            />
+          </View>
+          {/* <Button
+            mode="contained"
+            onPress={() => {
+              sortArray();
+            }}>
+            Sort by Current Location
+          </Button>
+          <Button
+            mode="contained"
+            style={{marginTop: '5%'}}
+            onPress={() => {
+              sortbyGender();
+            }}>
+            Filter by own Gender
+          </Button> */}
+          <FloatingButton
+            title="Sort By"
+            title2="Current Location"
+            onPress={() => {
+              sortArray();
+            }}
+          />
+          <FloatingButton2
+            style={{marginLeft: 'auto'}}
+            title="Filter By"
+            title2="Gender"
+            onPress={() => {
+              sortbyGender();
+            }}
+          />
+          {/* </View> */}
+        </>
       ) : (
         <View
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <Text style={styles.header}>NO RIDES available YET</Text>
+          <Text style={styles.header}>NO RIDES Available</Text>
+          <Text style={{color: 'black', textAlign: 'center', fontSize: 15}}>
+            Have you filtered by gender? It might be possible there is no ride
+            created by a driver of your gender!
+          </Text>
+          <Text style={{color: 'black', textAlign: 'center', fontSize: 20}}>
+            Your gender: {gender}
+          </Text>
         </View>
       )}
     </Background>
@@ -312,5 +353,6 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontWeight: 'bold',
     paddingVertical: 12,
+    textAlign: 'center',
   },
 });

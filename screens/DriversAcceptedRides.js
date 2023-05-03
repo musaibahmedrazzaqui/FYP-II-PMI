@@ -96,8 +96,8 @@ const DriversAcceptedRides = ({navigation, route}) => {
 
   return (
     <Background>
+      <BackButton goBack={navigation.goBack} />
       <ScrollView>
-        <BackButton goBack={navigation.goBack} />
         <Text style={styles.header}>ACCEPTED REQUESTS ON YOUR RIDE</Text>
         {console.log('rides', rides)}
         {/* {rides[0] ? ():()} */}

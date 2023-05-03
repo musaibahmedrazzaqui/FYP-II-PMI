@@ -366,6 +366,7 @@ export default function OfferRideScreen({navigation, route}) {
           </Button> */}
         </Background>
       )}
+      {/* </View> */}
     </Background>
   );
 }

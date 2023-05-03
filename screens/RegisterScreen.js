@@ -298,8 +298,8 @@ export default function RegisterScreen({navigation}) {
           selectedValue={selectedGender}
           onValueChange={handleGenderChange}>
           <Picker.Item label="Select Gender" value="" />
-          <Picker.Item label="Male" value="male" />
-          <Picker.Item label="Female" value="female" />
+          <Picker.Item label="Male" value="Male" />
+          <Picker.Item label="Female" value="Female" />
         </Picker>
       </View>
       {console.log(gender.value)}

@@ -12,9 +12,11 @@ import {
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
+import BackButtonUsing from '../components/BackButtonUsing';
 import server from './globals';
 import Background from '../components/Background';
 import BackButton from '../components/BackButton';
+import PickupDestination from '../components/PickupDestination3';
 // import server from './globals';
 const getRidedata = response => {
   console.log('hereeee', response);
@@ -71,6 +73,35 @@ const ListRideRequestsScreen = ({navigation, route}) => {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
+      {/* BACK BUTTONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN */}
+      {/* <View
+        style={{
+          paddingBottom: 11,
+          flexDirection: 'row',
+        }}>
+        <View style={{marginRight: '12%'}}>
+          <BackButton goBack={navigation.goBack} />
+        </View>
+        <View
+          style={{
+            marginRight: '29%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: 'bold',
+              fontFamily: 'Roboto',
+              textAlign: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            All Ride Requests
+          </Text>
+        </View>
+      </View> */}
+      {/* <BackButtonUsing text="All Ride Requests" /> */}
       {console.log(rides)}
       {rides[0] ? (
         <FlatList
@@ -79,16 +110,32 @@ const ListRideRequestsScreen = ({navigation, route}) => {
           renderItem={({item}) => (
             <View style={{padding: 10}}>
               <TouchableOpacity>
-                <Card>
+                <Card style={{elevation: 15}}>
+                  <Text
+                    style={{color: 'black', fontSize: 15, fontStyle: 'italic'}}>
+                    Ride ID#:{item.RideID}
+                  </Text>
+                  <PickupDestination
+                    loc1={item.DriverfLocation.toString()
+                      .split(' ')
+                      .slice(0, 2)
+                      .join(' ')}
+                    loc2={item.to_location
+                      .toString()
+                      .split(' ')
+                      .slice(0, 2)
+                      .join(' ')}
+                  />
                   <Text
                     style={{
                       fontSize: 25,
                       marginLeft: 18,
-                      marginTop: 20,
+                      marginTop: 5,
                       color: 'black',
                     }}>
                     Passenger Name: {item.firstName} {item.lastName}
                   </Text>
+
                   {/* {getLocation(rides[item.id - 1])} */}
                   <Card.Content>
                     <Title>Pickup from: {item.location}</Title>
@@ -123,14 +170,13 @@ const ListRideRequestsScreen = ({navigation, route}) => {
                             fareDecided: item.userFare,
                           })
                           .then(() => {
-                            // alert("Navigating to Passenger's Location");
+                            navigation.navigate({
+                              name: 'DriverHome',
+                            });
                           })
                           .catch(function (error) {
                             console.log(error);
                           });
-                        navigation.navigate({
-                          name: 'NewHome',
-                        });
                       }}>
                       Accept
                     </Button>

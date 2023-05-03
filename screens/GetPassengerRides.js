@@ -151,29 +151,34 @@ const GetPassengerRides = ({navigation, route}) => {
   const handleAccept = async () => {
     try {
       console.log('SELECTEDITEM', selectedItem);
-      await axios.post(`${server}/rides/driverequestride`, {
-        pickuplocation: selectedItem?.location,
-        destination: selectedItem?.to_location,
-        from_lat: selectedItem?.latitude,
-        from_long: selectedItem?.longitude,
-        to_lat: selectedItem?.to_latitude,
-        to_long: selectedItem?.to_longitude,
-        driveruserid: route.params?.userid,
-        passengeruserid: selectedItem?.userID,
-        vehicleID: vehicle,
-        fare: fare,
-        idpassengerrides: selectedItem?.idpassengerrides,
-        time: time,
-      });
-      alert('Sent request!');
+      await axios
+        .post(`${server}/rides/driverequestride`, {
+          pickuplocation: selectedItem?.location,
+          destination: selectedItem?.to_location,
+          from_lat: selectedItem?.latitude,
+          from_long: selectedItem?.longitude,
+          to_lat: selectedItem?.to_latitude,
+          to_long: selectedItem?.to_longitude,
+          driveruserid: route.params?.userid,
+          passengeruserid: selectedItem?.userID,
+          vehicleID: vehicle,
+          fare: fare,
+          idpassengerrides: selectedItem?.idpassengerrides,
+          time: time,
+        })
+        .then(res => {
+          navigation.navigate({
+            name: 'DriverHome',
+            params: {
+              userid: route.params?.userid,
+            },
+          });
+          alert('Sent request!');
+        });
+
       setModalVisible(false);
       setSelectedItem(null);
-      navigation.navigate({
-        name: 'DriverHome',
-        params: {
-          userid: route.params?.userid,
-        },
-      });
+
       // fetchData();
     } catch (error) {
       console.log(error);
