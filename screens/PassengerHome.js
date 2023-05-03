@@ -6,6 +6,7 @@ import tw from 'twrnc';
 import {Icon} from 'react-native-elements';
 import NavPassenger from '../components/NavPassenger';
 import axios from 'axios';
+import Geolocation from '@react-native-community/geolocation';
 import server from './globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -31,6 +32,9 @@ const PassengerHome = ({navigation, route}) => {
   const [checkone, setCheckone] = useState(false);
   const [userID, setUserID] = useState('');
   const [did, setdId] = useState();
+  const [latitude, setlatitude] = useState('0.0');
+
+  const [longitude, setlongitude] = useState('0.0');
   const [showdata, setShowdata] = useState(null);
   const isMounted = useRef(false);
   async function fetch() {
