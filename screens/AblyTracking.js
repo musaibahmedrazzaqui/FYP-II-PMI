@@ -43,6 +43,7 @@ const AblyTracking = ({navigation, route}) => {
     });
 
     let url = `${server}/rides/forably/${route.params?.userid}`;
+    const socket = io(SOCKET_SERVER_URL);
     axios.get(url).then(res => {
       console.log(url);
       const response = res.data;
@@ -52,6 +53,11 @@ const AblyTracking = ({navigation, route}) => {
         console.log(res.data.data[0]);
         setData(res.data.data[0]);
         setdriverid(res.data.data[0].DriverID);
+        console.log('DRIVERID', res.data.data[0].DriverID);
+        socket.emit('subscribe', res.data.data[0].DriverID);
+        socket.on('driverLocation', location => {
+          setDriverLocation(location);
+        });
         setCheck(5);
       } else {
         alert('No active rides yet');
@@ -59,15 +65,10 @@ const AblyTracking = ({navigation, route}) => {
       }
     });
     // Connect to the server via Socket.IO
-    const socket = io(SOCKET_SERVER_URL);
+
     // console.log(SOCKET_SERVER_URL);
     // Receive driver's location data from the server
     // socket.emit('join', driverId);
-    console.log(driverId);
-    socket.emit('subscribe', driverId);
-    socket.on('driverLocation', location => {
-      setDriverLocation(location);
-    });
 
     // Disconnect from the server on component unmount
     return () => {

@@ -83,10 +83,7 @@ export default function ReceiptScreen({navigation, route}) {
               .then(res => {
                 console.log(res.data);
                 navigation.navigate({
-                  name: 'DriversAcceptedRides',
-                  params: {
-                    userid: route.params.ride.DriverID,
-                  },
+                  name: 'NewHome',
                 });
               });
           }}>

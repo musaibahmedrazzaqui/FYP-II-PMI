@@ -195,8 +195,11 @@ const AvailableRidesScreen = ({navigation, route}) => {
                                 `${server}/rides/checkpassengerifhasactive/${route.params?.userid}`,
                               )
                               .then(res => {
+                                console.log('Fareres', res.data);
                                 setisloading(false);
                                 if (res.data.error == 0) {
+                                  delete item.datetime;
+                                  // console.log('ITEMMMM', item);
                                   navigation.navigate({
                                     name: 'FareNegotiation',
                                     params: {
@@ -207,7 +210,7 @@ const AvailableRidesScreen = ({navigation, route}) => {
                                     },
                                   });
                                   console.log(res.data.length);
-                                  setRides(getRidedata(response.data));
+                                  // setRides(getRidedata(response.data));
                                 } else if (res.data.error == 1) {
                                   setisloading(false);
                                   alert(res.data.data);

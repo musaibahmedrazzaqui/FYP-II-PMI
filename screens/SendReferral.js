@@ -9,6 +9,7 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import {Card} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Navigation from './NavigationComponent';
 const SendReferral = () => {
   const [email, setEmail] = useState('');
   const [userEmail, setuseremail] = useState('');
@@ -80,6 +81,7 @@ const SendReferral = () => {
         })
         .then(res => {
           console.log('email sent', res);
+          Navigation.navigate('NewHome');
         })
         .catch(function (error) {
           console.log(error);
