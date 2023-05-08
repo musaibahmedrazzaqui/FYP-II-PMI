@@ -6,7 +6,9 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  BackHandler
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import {theme} from '../core/theme';
 import Background from '../components/Background';
 import server from './globals';
@@ -117,6 +119,19 @@ export default function FareNegotiation({navigation, route}) {
       console.log('features : ' + place.features[0].geometry);
       return;
     }
+    useFocusEffect(
+      React.useCallback(() => {
+        const onBackPress = () => {
+          navigation.navigate("PassengerHome")
+        };
+  
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
+  
+        return () => {
+          BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        };
+      }, [])
+    );
 
     const latLng = place.features[0].geometry.coordinates;
     setLatitude(latLng[1]);

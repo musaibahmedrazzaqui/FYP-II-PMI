@@ -25,7 +25,9 @@ import {
   ScrollView,
   Dimensions,
   RefreshControl,
+  BackHandler
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 // import Sidebar from './Sidebar';
 import Navbar from '../components/NavBar';
@@ -144,6 +146,19 @@ const DriverHome = ({navigation, route}) => {
       }
     });
   }
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("NewHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   async function loggedout(key) {
     try {
       await AsyncStorage.removeItem('userdata');

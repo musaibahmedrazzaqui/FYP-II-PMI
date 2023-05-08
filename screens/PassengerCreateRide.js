@@ -6,6 +6,7 @@ import {
   StyleSheet,
   PermissionsAndroid,
   Platform,
+  BackHandler
 } from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
@@ -22,6 +23,7 @@ import BackButton from '../components/BackButton';
 import {theme} from '../core/theme';
 import server from './globals';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 // import { Dropdown } from "react-native-material-dropdown";
 const GOOGLE_MAPS_API_KEY = 'AIzaSyAhpqm1hIWBkVzKvf7uyqCmYNRxwQwbZzo';
 export default function PassengerCreateRide({navigation, route}) {
@@ -56,6 +58,19 @@ export default function PassengerCreateRide({navigation, route}) {
 
     // console.log(route.params?.userid);
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("PassengerHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   useEffect(() => {
     if (
       fromLatitude !== 0 &&

@@ -8,10 +8,12 @@ import {
   Image,
   TouchableOpacity,
   Linking,
+  BackHandler
 } from 'react-native';
 import io from 'socket.io-client';
 import axios from 'axios';
 import server from './globals';
+import { useFocusEffect } from '@react-navigation/native';
 // import { Card } from 'react-native-paper';
 import {Avatar, Button, Card, Title} from 'react-native-paper';
 import BackButton from '../components/BackButton';
@@ -35,6 +37,19 @@ const AblyTracking = ({navigation, route}) => {
     setDriverLocation(location);
     // console.log(location);
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("PassengerHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   useEffect(() => {
     // console.log(route.params.rides);
     Geolocation.getCurrentPosition(info => {

@@ -10,6 +10,7 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  BackHandler,
   Modal,
 } from 'react-native';
 import PickupDestination from '../components/PickupDestination3';
@@ -19,6 +20,7 @@ import axios from 'axios';
 import server from './globals';
 import Background from '../components/Background';
 import Header from '../components/Header';
+import { useFocusEffect } from '@react-navigation/native';
 // import Background from '../components/Background';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 // import {ScrollView} from 'react-native-web';
@@ -47,6 +49,19 @@ const AllRidesScreen = ({navigation, route}) => {
   const [selectedride, setselectedride] = useState(null);
   const [selectedItem, setSelectedItem] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("DriverHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   const availableRides = [
     {
       id: 1,

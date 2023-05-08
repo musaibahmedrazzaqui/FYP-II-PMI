@@ -9,6 +9,7 @@ import axios from 'axios';
 import Geolocation from '@react-native-community/geolocation';
 import server from './globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import Background from '../components/Background';
 import {
   View,
@@ -20,6 +21,7 @@ import {
   TouchableWithoutFeedback,
   Animated,
   Easing,
+  BackHandler
 } from 'react-native';
 // import Sidebar from './Sidebar';
 import Navbar from '../components/NavBar';
@@ -53,6 +55,20 @@ const PassengerHome = ({navigation, route}) => {
       console.log(`Error removing item ${key} from AsyncStorage: ${error}`);
     }
   }
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("NewHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
+  
   useEffect(() => {
     Geolocation.getCurrentPosition(
       position => {

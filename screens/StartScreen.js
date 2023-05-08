@@ -9,14 +9,14 @@ import Paragraph from '../components/Paragraph';
 export default function StartScreen({navigation}) {
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {text: 'YES', onPress: () => navigation.popToTop()},
-      ]);
+      // Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+      //   {
+      //     text: 'Cancel',
+      //     onPress: () => null,
+      //     style: 'cancel',
+      //   },
+      //   {text: 'YES', onPress: () => navigation.popToTop()},
+      // ]);
       return true;
     };
 

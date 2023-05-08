@@ -5,11 +5,12 @@ import {
   View,
   ScrollView,
   Image,
+  BackHandler
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {Text} from 'react-native-paper';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-
+import { useFocusEffect } from '@react-navigation/native';
 import DirectionsDisplay from '../components/DirectionsDisplay';
 import Geolocation from '@react-native-community/geolocation';
 import {fieldValidator} from '../helpers/fieldValidator';
@@ -123,6 +124,7 @@ export default function OfferRideScreen({navigation, route}) {
       setSeats({...seats, error: fieldError2});
       return;
     }
+
     // const now = new Date();
     const timezoneOffset = 5 * 60 * 60 * 1000; //  5 hours ahead of UTC
     const karachiTime = new Date(date.getTime() + timezoneOffset).toISOString();
@@ -190,6 +192,19 @@ export default function OfferRideScreen({navigation, route}) {
         console.log(error);
       });
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("DriverHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
 
   // const [text, onChangeText] = useState('');
 

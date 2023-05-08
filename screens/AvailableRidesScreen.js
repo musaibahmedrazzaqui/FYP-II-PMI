@@ -9,6 +9,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   PermissionsAndroid,
+  BackHandler
 } from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
@@ -20,6 +21,8 @@ import axios from 'axios';
 import PickupDestination from '../components/PickupDestination2';
 import FloatingButton from '../components/FloatingButton';
 import FloatingButton2 from '../components/FloatingButton2';
+import { useFocusEffect } from '@react-navigation/native';
+
 // import FareNegotiation from './FareNegotiation';
 
 const AvailableRidesScreen = ({navigation, route}) => {
@@ -59,7 +62,19 @@ const AvailableRidesScreen = ({navigation, route}) => {
     console.log('Distance: ', distance);
     return distance;
   }
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("PassengerHome")
+      };
 
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   const getRidedata = response => {
     // console.log('hereeee', response);
     let rData = response;

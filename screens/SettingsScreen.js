@@ -20,9 +20,11 @@ import {
   StyleSheet,
   Text,
   View,
+  BackHandler
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import {useState, useEffect} from 'react';
-const SettingsScreen = props => {
+const SettingsScreen = (props) => {
   const Navigation = useNavigation();
   const {theme} = props;
 
@@ -34,6 +36,19 @@ const SettingsScreen = props => {
   useEffect(() => {
     fetch();
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Navigation.navigate("NewHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   useEffect(() => {
     if (userid != null) {
       let url = `${server}/rides/getName/${userid}`;

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   RefreshControl,
   ScrollView,
+  BackHandler
 } from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
@@ -17,6 +18,7 @@ import server from './globals';
 import Background from '../components/Background';
 import BackButton from '../components/BackButton';
 import PickupDestination from '../components/PickupDestination3';
+import { useFocusEffect } from '@react-navigation/native';
 // import server from './globals';
 const getRidedata = response => {
   console.log('hereeee', response);
@@ -34,6 +36,19 @@ const ListRideRequestsScreen = ({navigation, route}) => {
   const [rides, setRides] = useState([]);
   const [latitude, setlatitude] = React.useState('0.0');
   const [longitude, setlongitude] = React.useState('0.0');
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("DriverHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   const fetchData = async () => {
     console.log(route.params?.userid);
     axios

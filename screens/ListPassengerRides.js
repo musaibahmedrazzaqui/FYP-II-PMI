@@ -8,6 +8,7 @@ import {
   Linking,
   Image,
   StyleSheet,
+  BackHandler
 } from 'react-native';
 import Background from '../components/Background';
 
@@ -16,6 +17,7 @@ import server from './globals';
 import DirectionsDisplay from '../components/DirectionsDisplay';
 import Header from '../components/Header';
 import Button from '../components/Button';
+import { useFocusEffect } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -135,6 +137,19 @@ const ListPassengerRides = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("PassengerHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
 
   const fetchData = async () => {
     console.log('UID', route.params?.userid);

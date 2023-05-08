@@ -7,6 +7,7 @@ import {
   Modal,
   Button,
   StyleSheet,
+  BackHandler
 } from 'react-native';
 
 import {Picker} from '@react-native-picker/picker';
@@ -16,6 +17,7 @@ import PickupDestination from '../components/PickupDestination2';
 import TextInput from '../components/TextInput';
 import DirectionsDisplay from '../components/DirectionsDisplay';
 import Background from '../components/Background';
+import { useFocusEffect } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -105,6 +107,19 @@ const GetPassengerRides = ({navigation, route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("DriverHome")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
 
   const fetchData = async () => {
     try {

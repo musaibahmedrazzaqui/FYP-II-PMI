@@ -1,4 +1,4 @@
-import {View, Text, Alert} from 'react-native';
+import {View, Text, Alert, BackHandler} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import server from './globals';
 // import {Alert} from 'react-native-paper';
@@ -10,7 +10,8 @@ import TextInput from '../components/TextInput';
 import {Card} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Navigation from './NavigationComponent';
-const SendReferral = () => {
+import { useFocusEffect } from '@react-navigation/native';
+const SendReferral = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [userEmail, setuseremail] = useState('');
   const [showdata, setShowdata] = useState(null);
@@ -31,7 +32,19 @@ const SendReferral = () => {
   useEffect(() => {
     fetch();
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate("NewHome")
+      };
 
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
   const handleEmailChange = text => {
     setEmail(text);
     setIsValidEmail(validateEmail(text));

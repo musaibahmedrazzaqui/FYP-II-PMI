@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   StyleSheet,
+  BackHandler
 } from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
@@ -15,6 +16,7 @@ import BackButton from '../components/BackButton';
 import RNRestart from 'react-native-restart';
 import {useNavigation} from '@react-navigation/native';
 import server from './globals';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 // import FareNegotiation from './FareNegotiation';
 
@@ -87,6 +89,19 @@ const ListVehiclesScreen = ({navigation, route}) => {
       //  setdId(response.data[0].DriverID);
     });
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        Navigation.navigate("SettingsScreen")
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
 
   return (
     <Background>
