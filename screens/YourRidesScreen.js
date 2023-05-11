@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {theme} from '../core/theme';
 import {useEffect} from 'react';
 import FareButton from '../components/FareButton';
-import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, Image, BackHandler} from 'react-native';
 import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
 import Geolocation from '@react-native-community/geolocation';
 import Background from '../components/Background';
@@ -11,6 +11,7 @@ import BackButton from '../components/BackButton';
 import RNRestart from 'react-native-restart';
 import server from './globals';
 import axios from 'axios';
+import {useFocusEffect} from '@react-navigation/native';
 // import FareNegotiation from './FareNegotiation';
 const getRidedata = response => {
   console.log('hereeee', response);
@@ -28,7 +29,7 @@ const YourRidesScreen = ({navigation, route}) => {
   const [rides, setRides] = useState([]);
 
   useEffect(() => {
-    console.log(route.params.userID);
+    console.log(route.params.rides);
     axios
       .get(`${server}/rides/checkifleft/${route.params?.userID}`)
       .then(res => {
@@ -44,7 +45,19 @@ const YourRidesScreen = ({navigation, route}) => {
       });
     // setInterval(updateState, 3000);
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('PassengerHome');
+      };
 
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, []),
+  );
   return (
     <Background>
       {/* <Logo /> */}
@@ -63,7 +76,9 @@ const YourRidesScreen = ({navigation, route}) => {
         {/* {getLocation(rides[item.id - 1])} */}
         <Card.Content>
           <Title>Going to {route.params.rides.to_location.slice(0, 28)}</Title>
-          <Text>Fare Decided {route.params.userFare} Rupees</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+            Fare Decided {route.params.rides.fareDecided} Rupees
+          </Text>
           {/* <TextInput
             label="Enter your fare & wait for driver to accept request"
             returnKeyType="done"

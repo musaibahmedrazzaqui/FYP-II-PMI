@@ -2,6 +2,7 @@ import {Provider} from 'react-redux';
 
 // Screens
 import AllRidesScreen from './screens/AllRidesScreen';
+import AllRidesPassenger from './screens/AllRidesPassenger';
 import EnterReferral from './screens/EnterReferral';
 import JustChecking from './screens/JustChecking';
 import HomeScreen from './screens/HomeScreen';
@@ -33,6 +34,7 @@ import DriversAcceptedRides from './screens/DriversAcceptedRides';
 import OfferRideScreen from './screens/OfferRideScreen';
 import NewHome from './screens/NewHome';
 import ReceiptScreen from './screens/ReceiptScreen';
+import ReceiptPassengerScreen from './screens/ReceiptPassengerScreen';
 import DriverHome from './screens/DriverHome';
 import PassengerHome from './screens/PassengerHome';
 // Redux Store
@@ -96,6 +98,13 @@ export function LoggedinStack() {
       <Stack.Screen
         name="AllRidesScreen"
         component={AllRidesScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AllRidesPassenger"
+        component={AllRidesPassenger}
         options={{
           headerShown: false,
         }}
@@ -168,6 +177,13 @@ export function LoggedinStack() {
       <Stack.Screen
         name="ReceiptScreen"
         component={ReceiptScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ReceiptPassengerScreen"
+        component={ReceiptPassengerScreen}
         options={{
           headerShown: false,
         }}
@@ -398,6 +414,13 @@ export default function App() {
                 }}
               />
               <Stack.Screen
+                name="AllRidesPassenger"
+                component={AllRidesPassenger}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
                 name="PassengerHome"
                 component={PassengerHome}
                 options={{
@@ -450,6 +473,13 @@ export default function App() {
               <Stack.Screen
                 name="ReceiptScreen"
                 component={ReceiptScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="ReceiptPassengerScreen"
+                component={ReceiptPassengerScreen}
                 options={{
                   headerShown: false,
                 }}

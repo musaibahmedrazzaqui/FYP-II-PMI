@@ -337,14 +337,16 @@ const DriversAcceptedRides = ({navigation, route}) => {
         title2="Navigate to destination!"
       />
       <FloatingButton2
-        onPress={() =>
+        onPress={() => {
+          console.log('rides', rides);
           navigation.navigate({
             name: 'DriverEndScreen',
             params: {
               rides: rides,
+              rid: route.params?.ride.RideID,
             },
-          })
-        }
+          });
+        }}
         title="Want to End ride?"
         title2="Click here!"
       />

@@ -6,9 +6,9 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  BackHandler
+  BackHandler,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import {theme} from '../core/theme';
 import Background from '../components/Background';
 import server from './globals';
@@ -37,6 +37,19 @@ export default function FareNegotiation({navigation, route}) {
   useEffect(() => {
     console.log('HI brother');
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('PassengerHome');
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, []),
+  );
   const getPlaceName = async (latitude, longitude) => {
     // code to get coordinates by making API calls to mapbox endpoint
 
@@ -119,19 +132,6 @@ export default function FareNegotiation({navigation, route}) {
       console.log('features : ' + place.features[0].geometry);
       return;
     }
-    useFocusEffect(
-      React.useCallback(() => {
-        const onBackPress = () => {
-          navigation.navigate("PassengerHome")
-        };
-  
-        BackHandler.addEventListener('hardwareBackPress', onBackPress);
-  
-        return () => {
-          BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-        };
-      }, [])
-    );
 
     const latLng = place.features[0].geometry.coordinates;
     setLatitude(latLng[1]);
@@ -140,21 +140,6 @@ export default function FareNegotiation({navigation, route}) {
     coord = {lat: latLng[1], lng: latLng[0]};
     console.log('coord', coord);
     console.log('places' + textTwo);
-    // axios
-    //   .post(`${server}/rides/driverlocation`, {
-    //     latitude: latLng[1],
-    //     longitude: latLng[0],
-    //     driverUserId: route.params.userid,
-    //     location: textTwo,
-    //     driverID: did,
-    //   })
-    //   .then(() => {
-    //     alert('Sucessfully added!');
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //     alert(error);
-    //   });
 
     return coord;
   };
@@ -281,8 +266,8 @@ export default function FareNegotiation({navigation, route}) {
           <Card.Actions>
             <Button
               onPress={() => {
-                console.log('OYE CHAL KION NHI RAHA');
-                if (latitude && longitude && text != '') {
+                console.log('text', text, latitude, longitude);
+                if (text != '') {
                   axios
                     .post(`${server}/rides/addnegotiation`, {
                       driverFare: route.params.rides.fareEntered,
@@ -296,7 +281,7 @@ export default function FareNegotiation({navigation, route}) {
                     })
                     .then(() => {
                       alert('Request Sent to the driver!');
-                      navigation.reset('NewHome');
+                      navigation.navigate('NewHome');
                     })
                     .catch(function (error) {
                       console.log(error);

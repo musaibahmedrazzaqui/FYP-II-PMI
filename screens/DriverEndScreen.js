@@ -76,11 +76,9 @@ export default function ReceiptScreen({navigation, route}) {
           onPress={() => {
             console.log(rating);
             console.log(comment);
-            console.log(route.params.rides[0].RideID);
+            // console.log(route.params.rides[0].RideID);
             axios
-              .get(
-                `${server}/rides/updatestatusride/${route.params.rides[0].RideID}`,
-              )
+              .get(`${server}/rides/updatestatusride/${route.params.rid}`)
               .then(res => {
                 console.log(res.data);
                 navigation.navigate({

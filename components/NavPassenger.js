@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {FlatList, Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
 import tw from 'twrnc';
 import {useNavigation} from '@react-navigation/native';
 import server from '../screens/globals';
@@ -22,8 +29,14 @@ const data = [
   {
     id: '3',
     title: 'Open Live Tracking of Incoming Rides',
-    image: require('../assets/booking.png'),
+    image: require('../assets/livetracking.png'),
     screen: 'AblyTracking',
+  },
+  {
+    id: '4',
+    title: 'View Ride Requests',
+    image: require('../assets/booking.png'),
+    screen: 'ListPassengerRides',
   },
 ];
 
@@ -46,45 +59,61 @@ const NavPassenger = ({uid, latitude, longitude}) => {
   }, []);
 
   return (
-    
-      <><View style={{ paddingBottom: 13 }}>
-      <Text style={tw`m-2 font-bold text-8 text-center text-gray-700`}>Hi {name}!</Text>
-      <Text style={tw`text-5 text-center text-gray-500`}>
-        Welcome to Passenger Mode
-      </Text>
+    <>
+      <View style={{paddingBottom: 13}}>
+        <Text style={tw`m-2 font-bold text-8 text-center text-gray-700`}>
+          Hi {name}!
+        </Text>
+        <Text style={tw`text-5 text-center text-gray-500`}>
+          Welcome to Passenger Mode
+        </Text>
         <FlatList
           data={data}
           keyExtractor={item => item.id}
           vertical
-          renderItem={({ item }) => (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: '7%' }}>
-            <TouchableOpacity
-              sytle={[styles.item]}
-              onPress={() => Navigation.navigate({
-                name: item.screen,
-                params: {
-                  userid: uid,
-                },
-              })}
-              style={[tw`p-3 rounded-lg bg-gray-200`, { width: 270, height: 100, alignItems: 'center' }]}>
-              <View>
-                <Image
-                  style={{
-                    width: 90,
-                    height: 50,
-                    resizeMode: 'contain',
-                    alignSelf: 'center',
-                  }}
-                  source={item.image} />
-                <Text style={[tw`text-black font-bold py-2 text-center`]}>
-                  {item.title}
-                </Text>
-              </View>
-            </TouchableOpacity>
+          renderItem={({item}) => (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '7%',
+              }}>
+              <TouchableOpacity
+                sytle={[styles.item]}
+                onPress={() =>
+                  Navigation.navigate({
+                    name: item.screen,
+                    params: {
+                      userid: uid,
+                    },
+                  })
+                }
+                style={[
+                  tw`p-3 rounded-lg bg-gray-200`,
+                  {width: 270, height: 100, alignItems: 'center'},
+                ]}>
+                <View>
+                  <Image
+                    style={{
+                      width: 90,
+                      height: 50,
+                      resizeMode: 'contain',
+                      alignSelf: 'center',
+                    }}
+                    source={item.image}
+                  />
+                  <Text style={[tw`text-black font-bold py-2 text-center`]}>
+                    {item.title}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          )} />
-      </View></>
-);
+          )}
+        />
+      </View>
+    </>
+  );
 };
 
 export default NavPassenger;
@@ -104,7 +133,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
-  name: { fontSize: 17 },
+  name: {fontSize: 17},
   phoneNumber: {
     opacity: 0.6,
     fontSize: 14,

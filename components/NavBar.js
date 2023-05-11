@@ -6,30 +6,32 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 const NavBar = ({onClose, uid}) => {
+  const chatUrl = `whatsapp://send?phone=03330229763`;
   const Navigation = useNavigation();
   return (
     <TouchableWithoutFeedback onPress={onClose}>
       <View style={styles.container}>
         {/* Sidebar content */}
         <View style={styles.contentContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+              Navigation.navigate({
+                name: 'NewHome',
+              })
+            }>
             <Image
               style={styles.icon}
-              source={require('../assets/requests.png')}
+              source={require('../assets/homescreen.png')}
             />
             <Text style={styles.buttonText}>Home Screen</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.button}>
-            <Image
-              style={styles.icon}
-              source={require('../assets/requests.png')}
-            />
-            <Text style={styles.buttonText}>Previous Trips</Text>
-          </TouchableOpacity>
+
           <View style={styles.divider} />
           <TouchableOpacity
             style={styles.button}
@@ -43,7 +45,7 @@ const NavBar = ({onClose, uid}) => {
             }>
             <Image
               style={styles.icon}
-              source={require('../assets/requests.png')}
+              source={require('../assets/viewprofile.png')}
             />
             <Text style={styles.buttonText}>View Profile</Text>
           </TouchableOpacity>
@@ -60,14 +62,14 @@ const NavBar = ({onClose, uid}) => {
             }>
             <Image
               style={styles.icon}
-              source={require('../assets/requests.png')}
+              source={require('../assets/sendreferral.png')}
             />
             <Text style={styles.buttonText}>Send Referral Code</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
               Navigation.navigate({
-                name: 'ListPassengerRides',
+                name: 'AllRidesPassenger',
                 params: {
                   userid: uid,
                 },
@@ -76,9 +78,28 @@ const NavBar = ({onClose, uid}) => {
             style={styles.button}>
             <Image
               style={styles.icon}
-              source={require('../assets/requests.png')}
+              source={require('../assets/viewstatus.png')}
             />
-            <Text style={styles.buttonText}>View Ride Requests</Text>
+            <Text style={styles.buttonText}>View Ride Status</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.canOpenURL(chatUrl)
+                .then(supported => {
+                  if (!supported) {
+                    alert(`WhatsApp is not installed on your device`);
+                  } else {
+                    return Linking.openURL(chatUrl);
+                  }
+                })
+                .catch(err => console.error(`An error occurred: ${err}`));
+            }}
+            style={styles.button}>
+            <Image
+              style={styles.icon}
+              source={require('../assets/contactus.png')}
+            />
+            <Text style={styles.buttonText}>Contact Us</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -93,7 +114,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: '75%',
-    height:'150%',
+    height: '150%',
     backgroundColor: '#161642',
     // opacity:'100%',
   },

@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { FlashList } from "@shopify/flash-list";
-import { FlatList, Image, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {FlashList} from '@shopify/flash-list';
+import {
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
 import tw from 'twrnc';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import server from '../screens/globals';
 import Background from './Background';
 
@@ -11,7 +18,7 @@ const data = [
   {
     id: '1',
     title: 'Offer a Ride',
-    image: require('../assets/requests.png'),
+    image: require('../assets/offeraride.png'),
     screen: 'OfferRideScreen',
   },
   {
@@ -23,18 +30,18 @@ const data = [
   {
     id: '3',
     title: 'Active Rides',
-    image: require('../assets/requests.png'),
+    image: require('../assets/activerequests.png'),
     screen: 'AllRidesScreen',
   },
   {
     id: '4',
     title: 'Passenger Created Rides',
-    image: require('../assets/requests.png'),
+    image: require('../assets/passengerrides.png'),
     screen: 'GetPassengerRides',
   },
 ];
 
-const navOptions = ({ uid }) => {
+const navOptions = ({uid}) => {
   const [name, setName] = useState('');
   useEffect(() => {
     let url = `${server}/rides/getName/${uid}`;
@@ -48,48 +55,71 @@ const navOptions = ({ uid }) => {
   const Navigation = useNavigation();
 
   return (
-    
-        <><View style={{ paddingBottom: 13 }}>
-      <Text style={tw`m-2 font-bold text-8 text-center text-gray-700`}>Hi {name}!</Text>
-      <Text style={tw`text-5 text-center text-gray-500`}>
-        Welcome to Driver Mode
-      </Text>
-    </View><View style={{ flexDirection: 'row', flex: 1, width: '100%', color: '#000000', paddingBottom: 10 }}>
+    <>
+      <View style={{paddingBottom: 13}}>
+        <Text style={tw`m-2 font-bold text-8 text-center text-gray-700`}>
+          Hi {name}!
+        </Text>
+        <Text style={tw`text-5 text-center text-gray-500`}>
+          Welcome to Driver Mode
+        </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+          width: '100%',
+          color: '#000000',
+          paddingBottom: 10,
+        }}>
         <FlatList
           data={data}
           keyExtractor={item => item.id}
           vertical
-          renderItem={({ item }) => (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: '5%' }}>
-            <TouchableOpacity
-              sytle={[styles.item]}
-              onPress={() => Navigation.navigate({
-                name: item.screen,
-                params: {
-                  userid: uid,
-                },
-              })}
-              style={[tw`p-3 rounded-lg bg-gray-200`, { width: 270, height: 100, alignItems: 'center' }]}>
-              <View>
-                <Image
-                  style={{
-                    width: 90,
-                    height: 50,
-                    resizeMode: 'contain',
-                    alignSelf: 'center',
-                  }}
-                  source={item.image} />
-                <Text style={[tw`text-black font-bold py-2 text-center`]}>
-                  {item.title}
-                </Text>
-              </View>
-            </TouchableOpacity>
+          renderItem={({item}) => (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: '5%',
+              }}>
+              <TouchableOpacity
+                sytle={[styles.item]}
+                onPress={() =>
+                  Navigation.navigate({
+                    name: item.screen,
+                    params: {
+                      userid: uid,
+                    },
+                  })
+                }
+                style={[
+                  tw`p-3 rounded-lg bg-gray-200`,
+                  {width: 270, height: 100, alignItems: 'center'},
+                ]}>
+                <View>
+                  <Image
+                    style={{
+                      width: 90,
+                      height: 50,
+                      resizeMode: 'contain',
+                      alignSelf: 'center',
+                    }}
+                    source={item.image}
+                  />
+                  <Text style={[tw`text-black font-bold py-2 text-center`]}>
+                    {item.title}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          )} />
-      </View></>
+          )}
+        />
+      </View>
+    </>
   );
 };
-
 
 export default navOptions;
 const styles = StyleSheet.create({
@@ -108,7 +138,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
-  name: { fontSize: 17 },
+  name: {fontSize: 17},
   phoneNumber: {
     opacity: 0.6,
     fontSize: 14,

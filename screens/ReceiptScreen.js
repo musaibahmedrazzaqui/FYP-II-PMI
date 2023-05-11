@@ -21,7 +21,7 @@ import BackButton from '../components/BackButton';
 export default function ReceiptScreen({navigation, route}) {
   const [rating, setRating] = useState(null);
   const [comment, setComment] = useState('');
-
+  console.log(route.params.ride);
   const handleRating = value => {
     setRating(value);
   };
@@ -42,10 +42,8 @@ export default function ReceiptScreen({navigation, route}) {
         <Text style={styles.question}>How was your Experience?</Text>
         <View style={styles.ratingContainer}>
           <TouchableOpacity
-            style={
-              rating === true ? styles.activeButton : styles.inactiveButton
-            }
-            onPress={() => handleRating(true)}>
+            style={rating === 0 ? styles.activeButton : styles.inactiveButton}
+            onPress={() => handleRating(0)}>
             <Image
               source={require('../assets/face1.png')}
               style={styles.icon}
@@ -53,10 +51,8 @@ export default function ReceiptScreen({navigation, route}) {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={
-              rating === false ? styles.activeButton : styles.inactiveButton
-            }
-            onPress={() => handleRating(false)}>
+            style={rating === 1 ? styles.activeButton : styles.inactiveButton}
+            onPress={() => handleRating(1)}>
             <Image
               source={require('../assets/surprise.png')}
               style={styles.icon}
@@ -82,9 +78,29 @@ export default function ReceiptScreen({navigation, route}) {
               )
               .then(res => {
                 console.log(res.data);
-                navigation.navigate({
-                  name: 'NewHome',
-                });
+                axios
+                  .post(`${server}/rides/addtoafterride`, {
+                    flag: rating,
+                    comment: comment,
+                    from_id: route.params.ride.DriverID,
+                    to_id: route.params.ride.PassengerID,
+                    rideID: route.params.ride.RideID,
+                  })
+                  .then(res => {
+                    console.log('responseeeeeeeeeee', res);
+                    if (res.data.error == -1) {
+                      alert('Already reviewed!');
+                    } else if (res.data.error == 0) {
+                      alert('Successfully posted');
+                    }
+
+                    navigation.navigate({
+                      name: 'NewHome',
+                    });
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
               });
           }}>
           Submit
